@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxJava2.x," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="RxJava 2.x 使用详解(五) 条件操作符">
+<meta name="keywords" content="RxJava2.x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava 2.x 使用详解(五) 条件操作符">
+<meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html">
+<meta property="og:site_name" content="Android开发笔记">
+<meta property="og:description" content="RxJava 2.x 使用详解(五) 条件操作符">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-06-30T17:20:09.167Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava 2.x 使用详解(五) 条件操作符">
+<meta name="twitter:description" content="RxJava 2.x 使用详解(五) 条件操作符">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html"/>
+
+
+
+
+
+  <title>RxJava 2.x 使用详解(五) 条件操作符 | Android开发笔记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Android开发笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程语言">
+          <a href="/categories/code" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />
+            
+            编程语言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-git笔记">
+          <a href="/categories/git" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-git"></i> <br />
+            
+            Git笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rxjava2.x笔记">
+          <a href="/tags/rxjava2-x" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
+            
+            RxJava2.x笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-工作点点">
+          <a href="/categories/in-work" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tasks"></i> <br />
+            
+            工作点点
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-杂谈">
+          <a href="/categories/writing" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-edit"></i> <br />
+            
+            杂谈
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxJava 2.x 使用详解(五) 条件操作符</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-19T04:37:00+08:00">
+                2018-06-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2.x笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>RxJava 2.x 使用详解(五) 条件操作符</strong><br><a id="more"></a></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本节将会介绍<strong>条件操作符</strong>，用于控制<strong>被观察者开始、停止、跳过的各种条件操作符</strong>。</p>
+<h3 id="all"><a href="#all" class="headerlink" title="all"></a>all</h3><p><strong>要判断所有元素是否满足某个条件</strong>，可以使用 <code>all</code> 操作符，它接受一个 <code>Predicate</code>，其中的 <code>test</code> 方法<strong>用于判断某个元素是否满足条件，最终输出是否所有元素都满足条件</strong>，比如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .all(integer -&gt; integer &gt;= 0)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子是判断是否所有元素都大于等于0，<code>all</code> 操作符会把<strong>被观察者转换成 <code>Single&lt;Boolean&gt;</code> 类型的被观察者，最终输出结果为true</strong>。</p>
+<h3 id="ambArray"><a href="#ambArray" class="headerlink" title="ambArray"></a>ambArray</h3><p><code>ambArray</code> 操作符可以<strong>从多个被观察者中选择第一个发射元素的被观察者进行处理，其它被观察者则抛弃</strong>，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.ambArray(</span><br><span class="line">        Flowable.timer(1, TimeUnit.SECONDS),</span><br><span class="line">        Flowable.just(3, 4, 5))//仅处理第一个发射元素的被观察者</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码只会处理第二个被观察者，输出结果为3,4,5。</p>
+<h3 id="contains"><a href="#contains" class="headerlink" title="contains"></a>contains</h3><p>如果要<strong>判断被观察者是否包含某一个元素</strong>，可以使用 <code>contains</code> 操作符，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .contains(3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码判断被观察者发射元素中是否包含 “3”，<code>contains</code>操作符会把<strong>被观察者转换成Single<boolean>类型的被观察者,输出结果为true</boolean></strong>。</p>
+<h3 id="any"><a href="#any" class="headerlink" title="any"></a>any</h3><p>我们观察 <code>contains</code> 的源码会发现，实际上它调用的是 <code>any</code> 操作符，<code>any</code> 操作符<strong>可以判断是否存在某一个元素满足一定的条件，用法和all操作符类似</strong>，也是接受一个  <code>Predicate</code>，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .any(integer -&gt; integer == 3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子即寻找是否有元素 “3”，等价于 <code>contains(3)</code> ,<code>any</code> 操作符也是把<strong>被观察者转换成Single<boolean>类型的被观察者,输出结果为true</boolean></strong>。</p>
+<h3 id="isEmpty"><a href="#isEmpty" class="headerlink" title="isEmpty"></a>isEmpty</h3><p><strong>要判断一个被观察者是否发射过元素</strong>，可以使用 <code>isEmpty</code> 操作符，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .isEmpty()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出false，可以源码发现 <code>isEmpty</code> 实际上是调用了 <code>all</code> 操作符。</p>
+<h3 id="defaultIfEmpty"><a href="#defaultIfEmpty" class="headerlink" title="defaultIfEmpty"></a>defaultIfEmpty</h3><p><strong>如果你需要在被观察者不发送数据的时候需要发送一个默认的元素</strong>，可以使用 <code>defaultIfEmpty</code> 操作符，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .defaultIfEmpty(1)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p><strong>如果被观察者不发送任何数据，则会发送默认数据</strong>，上述代码中发送的是 “1”，故输出结果为“1”。</p>
+<h3 id="switchIfEmpty"><a href="#switchIfEmpty" class="headerlink" title="switchIfEmpty"></a>switchIfEmpty</h3><p><code>defaultIfEmpty</code> 操作符<strong>只能在被观察者不发送数据时发送一个默认的数据</strong>，如果需要<strong>发送更多数据，则可以使用 <code>switchIfEmpty</code> 操作符</strong>，发送自定义的被观察者作为替代，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .switchIfEmpty(Flowable.just(3, 4, 5))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码将会输出3,4,5。</p>
+<h3 id="sequenceEqual"><a href="#sequenceEqual" class="headerlink" title="sequenceEqual"></a>sequenceEqual</h3><p>如果要<strong>对比两个被观察者发射的元素队列</strong>，可以使用 <code>sequenceEqual</code> 操作符，它只关心<strong>两个发射队列的元素、元素发射顺序、和最终状态，而不关心他的时间</strong>，下面是一个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.sequenceEqual(</span><br><span class="line">        Flowable.just(0L, 1L, 2L),</span><br><span class="line">        Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子中输出是 true，<code>sequenceEqual</code> 操作符<strong>对于元素的类型也是十分敏感的</strong>，假设要自定义 <code>Integer</code> 和 <code>Long</code> 类型值相等则认为两个元素相等，可以添加额外的参数 <code>isEqual</code>，<strong>由于 <code>sequenceEqual</code> 操作符只能对比两个被观察者，所以使用 <code>BiPredicate</code> 作为判断类型</strong>，下面是例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.sequenceEqual(</span><br><span class="line">        Flowable.just(0, 1, 2),</span><br><span class="line">        Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS),</span><br><span class="line">        (num1, num2) -&gt; num1.longValue() == num2.longValue())</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中两个类型均为 <code>Number</code> 类型，<strong>但如果不使用自定义的 <code>isEqual</code> 参数，则会返回 false，这里使用了判断两个数的 <code>Long</code> 值相等则相等，所以最后输出结果为true</strong>。</p>
+<h3 id="takeUntil"><a href="#takeUntil" class="headerlink" title="takeUntil"></a>takeUntil</h3><p><strong>如果想执行到某个条件就停止事件</strong>，可以使用 <code>takeUntil</code> 操作符，它接受一个 <code>Predicate</code> 来定义停止条件，其用法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1,2,3)</span><br><span class="line">        .takeUntil(integer -&gt; integer==2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码表明当元素 ==2 时则停止，所以输出结果为 1,2。<strong>这里值得注意的是，输出结果是包含该元素的</strong>。除此之外，<code>takeUntil</code> <strong>也可以接受另外一个被观察者，当这个被观察者结束之后则停止第一个被观察者</strong>,例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .takeUntil(Flowable.timer(1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码将会在 1 秒后停止 <code>interval</code> 生成的被观察者，所以输出结果只有 0,1,2,3,4,5,6,7,8。</p>
+<h3 id="takeWhile"><a href="#takeWhile" class="headerlink" title="takeWhile"></a>takeWhile</h3><p><code>takeWhile</code> 操作符和 <code>takeUntil</code> 操作符类似，但是 <code>takeWhile</code> 只接受 <code>Predicate</code>，而且 <code>Predicate</code> 中的test方法返回true才执行被观察者的事件，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .takeWhile(longItem -&gt; longItem != 5L)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出的结果为 0,1,2,3,4，<strong>注意是不包含 5 这个元素的</strong>。</p>
+<h3 id="skipUntil"><a href="#skipUntil" class="headerlink" title="skipUntil"></a>skipUntil</h3><p><code>skipUntil</code> 操作符<strong>接收一个被观察者，直到该被观察者发送事件之前，第一个被观察者所有发送的元素将被抛弃</strong>，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 0, 1, TimeUnit.SECONDS)</span><br><span class="line">        .skipUntil(Flowable.timer(3, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中，表示 <code>intervalRange</code> 生成的<strong>被观察者前3秒的发送的元素都会被抛弃</strong>，所以最终输出结果为3,4,5,6,7,8,9。</p>
+<h3 id="skipWhile"><a href="#skipWhile" class="headerlink" title="skipWhile"></a>skipWhile</h3><p><code>skipWhile</code> 操作符可以接受一个 <code>Predicate</code> 用于<strong>控制跳过开始一段数据</strong>，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 5, 0, 100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .skipWhile(longItem -&gt; longItem &lt; 2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子中，少于 2 的元素将会被跳过，即输出 2,3,4，要注意的是，<strong>如果<code>.skipWhile(longItem -&gt; longItem &gt; 2)</code>是不会跳过任何发射元素的，因为 <code>skipWhile</code> 操作符只会过滤一开始的数据，不能跳过中间或者以后的数据</strong>。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html" rel="next" title="RxJava 2.x 使用详解(四) 合并聚合操作符">
+                <i class="fa fa-chevron-left"></i> RxJava 2.x 使用详解(四) 合并聚合操作符
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html" rel="prev" title="RxJava 2.x 使用详解(六) 变换操作符">
+                RxJava 2.x 使用详解(六) 变换操作符 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wei</p>
+              <p class="site-description motion-element" itemprop="description">来日不可待，去日不可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#all"><span class="nav-number">2.</span> <span class="nav-text">all</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ambArray"><span class="nav-number">3.</span> <span class="nav-text">ambArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contains"><span class="nav-number">4.</span> <span class="nav-text">contains</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#any"><span class="nav-number">5.</span> <span class="nav-text">any</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#isEmpty"><span class="nav-number">6.</span> <span class="nav-text">isEmpty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#defaultIfEmpty"><span class="nav-number">7.</span> <span class="nav-text">defaultIfEmpty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#switchIfEmpty"><span class="nav-number">8.</span> <span class="nav-text">switchIfEmpty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sequenceEqual"><span class="nav-number">9.</span> <span class="nav-text">sequenceEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#takeUntil"><span class="nav-number">10.</span> <span class="nav-text">takeUntil</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#takeWhile"><span class="nav-number">11.</span> <span class="nav-text">takeWhile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#skipUntil"><span class="nav-number">12.</span> <span class="nav-text">skipUntil</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#skipWhile"><span class="nav-number">13.</span> <span class="nav-text">skipWhile</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wei</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

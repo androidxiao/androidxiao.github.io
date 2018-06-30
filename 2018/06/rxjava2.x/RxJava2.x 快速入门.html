@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxJava2.x," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="RxJava2.x 使用详解（一）快速入门">
+<meta name="keywords" content="RxJava2.x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava2.x 使用详解（一）快速入门">
+<meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/RxJava2.x 快速入门.html">
+<meta property="og:site_name" content="Android开发笔记">
+<meta property="og:description" content="RxJava2.x 使用详解（一）快速入门">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-06-30T17:11:05.948Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava2.x 使用详解（一）快速入门">
+<meta name="twitter:description" content="RxJava2.x 使用详解（一）快速入门">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/rxjava2.x/RxJava2.x 快速入门.html"/>
+
+
+
+
+
+  <title>RxJava2.x 使用详解（一）快速入门 | Android开发笔记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Android开发笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程语言">
+          <a href="/categories/code" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />
+            
+            编程语言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-git笔记">
+          <a href="/categories/git" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-git"></i> <br />
+            
+            Git笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rxjava2.x笔记">
+          <a href="/tags/rxjava2-x" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
+            
+            RxJava2.x笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-工作点点">
+          <a href="/categories/in-work" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tasks"></i> <br />
+            
+            工作点点
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-杂谈">
+          <a href="/categories/writing" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-edit"></i> <br />
+            
+            杂谈
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/RxJava2.x 快速入门.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxJava2.x 使用详解（一）快速入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-15T04:37:00+08:00">
+                2018-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2.x笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>RxJava2.x 使用详解（一）快速入门</strong><br><a id="more"></a></p>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>首先知道什么是 RxJava，Rx 是 ReactiveX 的缩写，而 ReactiveX 是 Reactive Extendsions 的缩写。RxJava 顾名思义即使 Java 上的异步和基于事件响应式编程库。</p>
+<p>RxJava 基于观察者模式，主要有四个部分：观察者、被观察者、订阅、事件。</p>
+<h3 id="Hello-RxJava"><a href="#Hello-RxJava" class="headerlink" title="Hello RxJava"></a>Hello RxJava</h3><p>首先需要一个观察者，可以通过创建 <code>FlowableSubscriber</code>，由于事件处理的数据类型不一样，<code>FlowableSubscriber</code> 需要一个泛型来说明这个数据类型，这里假设我们要处理 <code>String</code> 类型，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">//创建观察者</span><br><span class="line">FlowableSubscriber&lt;String&gt; subscriber = new FlowableSubscriber&lt;String&gt;()&#123;</span><br><span class="line"> </span><br><span class="line"> @Override</span><br><span class="line"> public void onSubscribe(Subscription s)&#123;</span><br><span class="line">     //订阅时候的操作</span><br><span class="line">     s.request(Long.MAX_VALUE);//请求多少事件，这里表示不限制</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> @Override</span><br><span class="line"> public void onNext(String s)&#123;</span><br><span class="line">     //onNext 事件处理</span><br><span class="line">     Log.i(&quot;tag&quot;,s);</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> @Override</span><br><span class="line"> public void onError(Throwable t)&#123;</span><br><span class="line">     //onError 事件处理</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> @Override</span><br><span class="line"> public void onComplete()&#123;</span><br><span class="line">     //onComplete 事件处理</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到观察者身上有 <code>onNext</code>、<code>onError</code>、<code>onComplete</code> 这几个事件，接下来我们需要一个被观察者。<code>RxJava</code> 中需要使用 <code>create()</code> 方法去创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//被观察者</span><br><span class="line">Flowable&lt;String&gt; flowable = Flowable.create(new FlowableOnSubscribe&lt;String&gt;()&#123;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(FlowableEmitter&lt;String&gt; e) throws Excetion&#123;</span><br><span class="line">        //订阅观察者时的操作</span><br><span class="line">        e.onNext(&quot;test1&quot;);</span><br><span class="line">        e.onNext(&quot;test2&quot;);</span><br><span class="line">        e.onComplete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,BackpressureStrategy.BUFFER);</span><br></pre></td></tr></table></figure></p>
+<p>这里先忽略 <code>BackpressureStrategy</code> 是什么东西，后面会说到，被观察者执行各种操作，最后需要通过 <code>subscribe()</code> 订阅观察者：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flowable.subscribe(subscriber);</span><br></pre></td></tr></table></figure></p>
+<p>值得注意的是 <strong>一个被观察者可以订阅多个观察者</strong>。然后尝试运行上述代码，发现 <code>LogCat</code> 顺序输出 <code>test1</code> 和 <code>test2</code>，可以知道 <code>onNext</code> 是顺序执行的，一个正常的事件队列情况应该如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">onNext -&gt; onNext ... -&gt; onComplete</span><br><span class="line">onNext -&gt; onNext ... -&gt; onError</span><br></pre></td></tr></table></figure></p>
+<h3 id="Actions"><a href="#Actions" class="headerlink" title="Actions"></a>Actions</h3><p>上面可以看到 <code>FlowableSubscriber</code> 中我们只关心 <code>onNext</code> 方法，其他方法如果我们不需要，那么可以用 <code>Consumer</code> 来作为观察者：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flowable.subscribe(new Consumer&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void accept(String s)&#123;</span><br><span class="line">        //相当于 onNext 事件处理</span><br><span class="line">        Log.i(&quot;Consumer&quot;,s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>当我们查看 <code>subscribe()</code> 的重载时候会发现，如果你关心有多少个重载方法，其中有一组用于简化观察者的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">subscribe(onNext) //即上面的例子</span><br><span class="line">subscribe(onNext,onError)</span><br><span class="line">subscribe(onNext,onError,onComplete)</span><br><span class="line">subscribe(onNext,onError,onComplete,onSubscribe)</span><br></pre></td></tr></table></figure></p>
+<p>这里给出一个完整参数的例子，其他重载方法参考即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">flowable.subscribe(</span><br><span class="line">    new Consumer&lt;String&gt;()&#123;//相当于 onNext</span><br><span class="line">        @Override</span><br><span class="line">        public void accept(String s) throws Exception&#123;</span><br><span class="line">            </span><br><span class="line">        &#125;,new Consumer&lt;Throwable&gt;()&#123;//相当于 onError</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(Throwable throwable) throws Exception&#123;</span><br><span class="line">                </span><br><span class="line">            &#125;,new Action()&#123;//相当于 onComplete，注意这里是 Action</span><br><span class="line">                @Override</span><br><span class="line">                public void run() throws Exception&#123;</span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,new Consumer&lt;Subscription&gt;()&#123;//相当于 onSubscribe</span><br><span class="line">                @Override</span><br><span class="line">                public void accept(Subscription subscription) throws Exception&#123;</span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    )</span><br></pre></td></tr></table></figure></p>
+<p>上面出现了一个 <code>Action</code>，那么这个 <code>Action</code> 和 <code>Consumer</code> 是什么关系呢？实际上，这两个都是 <code>Actions</code>：</p>
+<ul>
+<li><strong>Action</strong>:无参数类型</li>
+<li><strong>Consumer<t></t></strong>:单一参数类型</li>
+</ul>
+<p>可以看到 <code>onComplete</code> 方法在 <code>FlowableSubscriber</code> 中属于无参数方法，而其他属于单一参数方法，自然对应使用 <code>Action</code> 和 <code>Consumer</code>。这时候你可能会产生一个疑问，假如有 2 个参数呢？3 个参数呢？…这里就需要使用：</p>
+<ul>
+<li><strong>BiConsumer&lt;T1,T2&gt;</strong>：双参数类型</li>
+<li><strong>Consumer&lt;Object[]&gt;</strong>：多参数类型</li>
+</ul>
+<h3 id="Observable-和-Observer"><a href="#Observable-和-Observer" class="headerlink" title="Observable 和 Observer"></a>Observable 和 Observer</h3><p>被观察者除了 <code>Flowable</code> 以外还有 <code>Observable</code>，它的使用方法和 <code>Flowable</code> 大体相似，也是使用 <code>create()</code> 创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//被观察者</span><br><span class="line">Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception&#123;</span><br><span class="line">        //订阅观察者时的操作</span><br><span class="line">        e.onNext(&quot;test1&quot;);</span><br><span class="line">        e.onNext(&quot;test2&quot;);</span><br><span class="line">        e.onComplete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;//没有背压设置</span><br></pre></td></tr></table></figure></p>
+<p>由于 <code>Observable</code> 不支持订阅 <code>Subscriber</code> 观察者，需要使用 <code>Observer</code> 作为观察者，其实现方式和 <code>Subscriber</code> 大体相似：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//观察者</span><br><span class="line">Observer&lt;String&gt; observer = new Observer&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onSubscribe(Disposable d)&#123;</span><br><span class="line">        //订阅时候的操作，无需 request</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onNext(String s)&#123;</span><br><span class="line">        //onNext 事件处理</span><br><span class="line">        Log.i(&quot;observer&quot;,s);</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onError(Throwable e)&#123;</span><br><span class="line">        //onError 事件处理</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onComplete()&#123;</span><br><span class="line">        //onComplete 事件处理</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>订阅操作也是通过 <code>subscribe()</code> 来操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">observable.subscribe(observer);</span><br></pre></td></tr></table></figure></p>
+<p>也可以通过上文提到的 <code>Actions</code> 来简化观察者，其写法和 <code>Flowable</code> 的 <code>subscirbe</code> 方法是完全一样的。</p>
+<h3 id="Observable-和-Flowable"><a href="#Observable-和-Flowable" class="headerlink" title="Observable 和 Flowable"></a>Observable 和 Flowable</h3><p>下面我们观察下上面两个例子，发现 <code>Observable</code> 和 <code>Flowable</code> 其中前者不需要背压（BackPressure）参数和请求资源（request）操作，其他都是大体相似的，那么他们两个有什么区别呢？分别什么时候用呢？</p>
+<p>这两者区别十分明显，<code>Observable</code> 不支持背压，而 <code>Flowable</code> 支持背压。关键是什么时候用呢？</p>
+<p>官方建议：</p>
+<ul>
+<li>使用 <code>Observable</code> - 不超过 1000 个元素、随着时间流逝基本不会出现 OOM - GUI 事件或者 1000 Hz 频率一下的元素 - 平台不支持 Java Steam(Java8 新特性) - <code>Observable</code> 开销比 <code>Flowable</code> 低</li>
+<li>使用 <code>Flowable</code> - 超过 10k+ 的元素（可以知道上限）- 读取硬盘操作（可以指定读取多少行）- 通过 JDBC 读取数据库 - 网络（流）IO 操作</li>
+</ul>
+<h3 id="BackPressure（背压）"><a href="#BackPressure（背压）" class="headerlink" title="BackPressure（背压）"></a>BackPressure（背压）</h3><p>所谓背压就是<strong>生产者（被观察者）的生产者大于消费者（观察者）消费速度</strong>从而导致的问题。</p>
+<p>举一个简单点的例子，如果被观察者快速发送消息，但是观察者处理消息的速度很缓慢，如果没有特定的流（Flow）控制，就会导致大量消息积压占用系统资源，最终导致十分缓慢。</p>
+<p><code>Flowable</code> 创建的时候已经设置了 <code>BackpressureStrategy</code>，而且 <code>Subscriber</code> 使用了 <code>request</code> 来控制最大的流量。</p>
+<h3 id="Single-和-SingleObserver"><a href="#Single-和-SingleObserver" class="headerlink" title="Single 和 SingleObserver"></a>Single 和 SingleObserver</h3><p>如果你使用一个单一连续事件流，即只有一个 <code>onNext</code> 事件，接着就触发 <code>onComplete</code> 或者 <code>onError</code>，这样你可以使用 <code>Single</code>。</p>
+<p><code>Single</code> 只包含两个事件，一个是正常处理成功的 <code>onSuccess</code>，另一个是处理失败的 <code>onError</code>，它只发送一次消息（当然就不存在背压问题），其中 <code>Single</code> 类似于 <code>Observable</code>，其代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">//被观察者</span><br><span class="line">Single&lt;String&gt; single = Single.create(new SingleOnSubscribe&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(SingleEmitter&lt;String&gt; e) throws Exception&#123;</span><br><span class="line">        e.onSuccess(&quot;test&quot;);</span><br><span class="line">        e.onSuccess(&quot;test2&quot;);//错误写法，重复调用也不会处理</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//订阅观察者 SingleObserver</span><br><span class="line">single.subscribe(new SingleObserver&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onSubscribe(Disposable d)&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onSuccess(String s)&#123;</span><br><span class="line">        //相当于 onNext 和 onComplete</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onError(Throwable e)&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>Single</code> 也可以使用 <code>Actions</code> 来简化 <code>Observer</code>，还记得 <code>BiConsumer</code> 这个双参数的 <code>Actions</code> 吗，正可以用 <code>Single</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//订阅观察者 BiConsumer</span><br><span class="line">single.subscribe(new BiConsumer&lt;String,Throwable&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void accept(String s,Throwable throwable) throws Exception&#123;</span><br><span class="line">        //onSuccess 和 onError 操作都在这里处理</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>当然也有单一 <code>Actions</code> 的模式</p>
+<ul>
+<li>single.subscribe(onSuccess)</li>
+<li>single.subscribe(onSucess,onError)</li>
+</ul>
+<p>另外 <code>Single</code> 也可以直接转换成 <code>Flowable</code> 或 <code>Observable</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">single.toFlowable();</span><br><span class="line">single.toObservable();</span><br></pre></td></tr></table></figure></p>
+<h3 id="Completable-和-CompletableObserver"><a href="#Completable-和-CompletableObserver" class="headerlink" title="Completable 和 CompletableObserver"></a>Completable 和 CompletableObserver</h3><p>如果你的观察者连 <code>onNext</code> 事件都不关心，你可以使用 <code>Completable</code>，它只有 <code>onComplete</code> 和 <code>onError</code> 两个事件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Completable.create(new CompletableOnSubscribe()&#123;//被观察者</span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(CompletableEmitter e) throws Exception&#123;</span><br><span class="line">        e.onComplete();//单一 onComplete 或 onError</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).subscribe(new CompletableObserver()&#123;//观察者</span><br><span class="line">    @Override</span><br><span class="line">    public void onSubscribe(Disposable d)&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onComplete()&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onError(Throwable e)&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>同样也可以使用 <code>Actions</code> 来简化 <code>Observer</code>：</p>
+<ul>
+<li>completable.subscribe(onComplete)</li>
+<li>completable.subscribe(onComplete,onError)</li>
+</ul>
+<p>要转换成其它类型的被观察者，也是可以使用 <code>toFlowable()</code>、<code>toObservable()</code>等方法去转换。</p>
+<h3 id="Maybe-和-MaybeObserver"><a href="#Maybe-和-MaybeObserver" class="headerlink" title="Maybe 和 MaybeObserver"></a>Maybe 和 MaybeObserver</h3><p>如果你有一个需求是可能发送一个数据或者不会发送任何数据，这时候你就需要 <code>Maybe</code>，它类似于 <code>Single</code> 和 <code>Completable</code> 的混合体。</p>
+<p><code>Maybe</code> 可能会调用以下其中一种情况（也就是所谓的 <code>Maybe</code>）:</p>
+<ul>
+<li><code>onSuccess</code> 或者 <code>onError</code></li>
+<li><code>onCompletable</code> 或者 <code>onError</code></li>
+</ul>
+<p>可以看到 <code>onSuccess</code> 和 <code>onComplete</code> 是互斥的存在，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">//被观察者</span><br><span class="line">Maybe&lt;String&gt; maybe = Maybe.create(new MaybeOnSubscribe&lt;String&gt;()&#123;</span><br><span class="line">   @Override</span><br><span class="line">   public void subscribe(MaybeEmitter&lt;String&gt; e) throws Exception&#123;</span><br><span class="line">       e.onSuccess(&quot;test&quot;);</span><br><span class="line">       //发送一个数据的情况，或者 onError,不需要再调用 onComplete （调用了也不会触发 onComplete 回调方法）</span><br><span class="line">       //e.onComplete();//不需要发送数据的情况，或者 OnError</span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//订阅观察者</span><br><span class="line">maybe.subscribe(new MaybeObserver&lt;String&gt;()&#123;</span><br><span class="line">   @Override</span><br><span class="line">   public void onSubscribe(Disposable d)&#123;</span><br><span class="line">       </span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   public void onSuccess(String s)&#123;</span><br><span class="line">       //发送一个数据时，相当于 onNext 和 onComplete，但不会触发另一个方法 onComplete、</span><br><span class="line">       Log.i(&quot;tag&quot;,s);</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   public void onComplete()&#123;</span><br><span class="line">       //无数据发送的时候的 onComplete 事件</span><br><span class="line">       Log.i(&quot;tag&quot;,&quot;onComplete&quot;);</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   public void onError(Throwable e)&#123;</span><br><span class="line">       </span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>同样可以是用 <code>Actions</code> 来简化 <code>Observer</code></p>
+<ul>
+<li>maybe.subscribe(onSuccess)</li>
+<li>maybe.subscribe(onSuccess,onError)</li>
+<li>maybe.subscribe(onSuccess,onError,onComplete)</li>
+</ul>
+<p>要转换成其它类型的被观察者，也是可以使用 <code>toFlowable()</code>、<code>toObservable()</code>等方法去转换。</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>本章描述了 RxJava 的观察者和被观察者，利用 <code>Actions</code> 来简化观察者，各种观察者的区别和转换。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/work/work-notes-2018-05-21.html" rel="next" title="工作每天都很忙">
+                <i class="fa fa-chevron-left"></i> 工作每天都很忙
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/rxjava2.x/RxJava.2.x 使用详解（二）创建操作符.html" rel="prev" title="RxJava2.x 使用详解（二）创建操作符">
+                RxJava2.x 使用详解（二）创建操作符 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wei</p>
+              <p class="site-description motion-element" itemprop="description">来日不可待，去日不可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hello-RxJava"><span class="nav-number">2.</span> <span class="nav-text">Hello RxJava</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Actions"><span class="nav-number">3.</span> <span class="nav-text">Actions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Observable-和-Observer"><span class="nav-number">4.</span> <span class="nav-text">Observable 和 Observer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Observable-和-Flowable"><span class="nav-number">5.</span> <span class="nav-text">Observable 和 Flowable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BackPressure（背压）"><span class="nav-number">6.</span> <span class="nav-text">BackPressure（背压）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Single-和-SingleObserver"><span class="nav-number">7.</span> <span class="nav-text">Single 和 SingleObserver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Completable-和-CompletableObserver"><span class="nav-number">8.</span> <span class="nav-text">Completable 和 CompletableObserver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Maybe-和-MaybeObserver"><span class="nav-number">9.</span> <span class="nav-text">Maybe 和 MaybeObserver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结尾"><span class="nav-number">10.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wei</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

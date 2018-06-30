@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxJava2.x," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="RxJava2.x 使用详解（二）创建操作符">
+<meta name="keywords" content="RxJava2.x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava2.x 使用详解（二）创建操作符">
+<meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/RxJava.2.x 使用详解（二）创建操作符.html">
+<meta property="og:site_name" content="Android开发笔记">
+<meta property="og:description" content="RxJava2.x 使用详解（二）创建操作符">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-06-30T17:11:15.373Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava2.x 使用详解（二）创建操作符">
+<meta name="twitter:description" content="RxJava2.x 使用详解（二）创建操作符">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/rxjava2.x/RxJava.2.x 使用详解（二）创建操作符.html"/>
+
+
+
+
+
+  <title>RxJava2.x 使用详解（二）创建操作符 | Android开发笔记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Android开发笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程语言">
+          <a href="/categories/code" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />
+            
+            编程语言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-git笔记">
+          <a href="/categories/git" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-git"></i> <br />
+            
+            Git笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rxjava2.x笔记">
+          <a href="/tags/rxjava2-x" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
+            
+            RxJava2.x笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-工作点点">
+          <a href="/categories/in-work" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tasks"></i> <br />
+            
+            工作点点
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-杂谈">
+          <a href="/categories/writing" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-edit"></i> <br />
+            
+            杂谈
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/RxJava.2.x 使用详解（二）创建操作符.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxJava2.x 使用详解（二）创建操作符</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-16T04:37:00+08:00">
+                2018-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2.x笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>RxJava2.x 使用详解（二）创建操作符</strong><br><a id="more"></a></p>
+<h3 id="just"><a href="#just" class="headerlink" title="just"></a>just</h3><p>第一篇中说到的被观察者可以采用 <code>Flowable</code>、<code>Observable</code>、<code>Single</code>等等的 <code>create</code> 方法来实现，如果对于只是发送几个数据来说，这个过程未免十分复杂繁琐，可以使用 <code>just</code> 操作符来简化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;test1&quot;,&quot;test2&quot;)</span><br><span class="line">        .subscribe(str -&gt; Log.i(&quot;tag&quot;,str));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码相当于顺序调用 <code>onNext(&quot;test1&quot;)</code> 和 <code>onNext(&quot;test2&quot;)</code>，然后调用 <code>onComplete</code> 方法。</p>
+<p>另外，还可以使用 <code>Observable</code>、<code>Single</code> 或者 <code>Maybe</code> 来调用这个操作符。对于 <code>Completable</code> 则不能使用（因为没有 <code>onNext</code> 事件），对于 <code>Flowable</code> 和 <code>Observable</code> 最多能接收 10 个参数，也就是发送 10 个数据，而 <code>Single</code> 和 <code>Maybe</code> 只能接收 1 个参数（只能发送一次 <code>onNext</code> 事件）。</p>
+<h3 id="fromArray"><a href="#fromArray" class="headerlink" title="fromArray"></a>fromArray</h3><p>只能说到的 <code>just</code> 操作符，最多只能接收 10 个参数。我们通过观察 <code>just</code> 操作符的源码可知，其实超过 2 个参数时，它会帮我们调用 <code>fromArray</code> 操作符，采用 <code>fromArray</code> 来接收任意长度的数据数组，代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flowable.from(1,2,3,4,5)</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;,String.valueOf(integer)));</span><br></pre></td></tr></table></figure></p>
+<p><code>fromArray</code> 可以直接传入一个数组，例如 <code>fromArray(new int[]{1,2,3})</code>，但不能传递一个 <code>list</code> 进去，这样它会直接把 <code>list</code> 当做一个数据元素发送。</p>
+<h3 id="empty"><a href="#empty" class="headerlink" title="empty"></a>empty</h3><p>上面说到，<code>fromArray</code> 可以接收任意长度的数据数组，假设数组元素数量为 0 会怎么样呢？查看 <code>fromArray</code> 源码可知，当数据长度为 0 时，会调用 <code>empty</code> 操作符。</p>
+<p><code>empty</code> 操作符不会发送任何数据，而是直接发送 <code>onComplete</code> 事件，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty().subscribe(</span><br><span class="line">    obj -&gt; Log.i(&quot;tag&quot;,&quot;next&quot; + obj.toString)),</span><br><span class="line">    e -&gt; Log.i(&quot;tag&quot;,&quot;error&quot;),</span><br><span class="line">    () -&gt; Log.i(&quot;tag&quot;,&quot;complete&quot;));</span><br></pre></td></tr></table></figure></p>
+<p>可以发现上面的例子只会打印 <code>complete</code>，其它回调并不会触发。</p>
+<h3 id="error"><a href="#error" class="headerlink" title="error"></a>error</h3><p>除了直接发送 <code>onComplete</code>，当然就有直接发送 <code>onError</code>，<code>error</code> 操作符就是调用直接发送 <code>onError</code> 事件给观察者：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.error(new RuntimeException(&quot;test&quot;)).subscribe(</span><br><span class="line">    obj -&gt; Log.i(&quot;tag&quot;,&quot;next&quot; + obj.toString()),</span><br><span class="line">    e -&gt; Log.i(&quot;tag&quot;,&quot;error&quot;),</span><br><span class="line">    () -&gt; Log.i(&quot;tag&quot;,&quot;complete&quot;));</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子只会打印 <code>error</code>，其它回调并不会触发。</p>
+<h3 id="never"><a href="#never" class="headerlink" title="never"></a>never</h3><p>下面来介绍另外一个什么都不会发送的操作符 <code>never</code>，也不会触发观察者任何的回调：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.never().subscribe(</span><br><span class="line">    obj -&gt; Log.i(&quot;tag&quot;,&quot;next&quot; + obj.toString)),</span><br><span class="line">    e -&gt; Log.i(&quot;tag&quot;,&quot;error&quot;),</span><br><span class="line">    () -&gt; Log.i(&quot;tag&quot;,&quot;complete&quot;));</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子将不会输出任何东西，这个操作符用于<strong>测试</strong>。</p>
+<h3 id="fromIterable"><a href="#fromIterable" class="headerlink" title="fromIterable"></a>fromIterable</h3><p>上面说到的 <code>fromArray</code> 并不能遍历 <code>list</code> 等集合，采用 <code>fromIterable</code> 可以遍历迭代数据集合：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">list.add(&quot;a&quot;);</span><br><span class="line">list.add(&quot;b&quot;);</span><br><span class="line">list.add(&quot;c&quot;);</span><br><span class="line"></span><br><span class="line">Flowable.fromIterable(list).subscribe(</span><br><span class="line">    s -&gt; Log.i(&quot;tag&quot;,s)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<p>可以看到结果是顺序输出列表中的元素，<code>fromIterable</code> 和 <code>fromArray</code> 除了输入数据不同，其它基本是相似的。</p>
+<h3 id="timer"><a href="#timer" class="headerlink" title="timer"></a>timer</h3><p>接下来说一下时间间隔操作符 <code>timer</code>，可以指定一段时间发送数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.timer(1,TimeUnit.SECONDS)</span><br><span class="line">        //这里的 x 是 long 类型</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子为延迟 1 秒后调用 <code>onNext(0)</code>，然后调用 <code>onComplete</code> 事件。其中 <code>timer</code> 操作符还有重载方法可以接收多个参数。</p>
+<h3 id="interval"><a href="#interval" class="headerlink" title="interval"></a>interval</h3><p>上面的 <code>timer</code> 操作符<strong>只能发送一次数据</strong>，对于要不断地发送数据，可以采用 <code>interval</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(2,1,TimeUnit.SECONDS)</span><br><span class="line">        //这里的 x 是 0,1,2,3...</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br></pre></td></tr></table></figure></p>
+<p>这里 <code>interval</code> 接收的第一个参数是第一次的延迟，如果忽略（重载方法）则和<strong>设定的间隔一样</strong>，也可以单独设置 <code>Scheduler</code>。<br>如果运行了上面的代码，会发现 <code>interval</code> 操作符会无限执行，永不停止，那么应该怎么停止呢？这里就需要过滤操作符 <code>take</code> 了，后面会介绍。</p>
+<h3 id="intervalRange"><a href="#intervalRange" class="headerlink" title="intervalRange"></a>intervalRange</h3><p>上面说到 <code>interval</code> 操作符是从 0 开始发送数据，如果我们需要指定发送范围，那么可以使用 <code>intervalRange</code> 操作符。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(1,10,2,1,TimeUnit.SECONDS)</span><br><span class="line">        //x 从 1-10，初始间隔 2 秒，之后间隔 1 秒 发送一次</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br></pre></td></tr></table></figure></p>
+<p>如果注释中的说明，当 x 从 1 开始发送到 10 后（注意参数 10 是发送 10 个数量的意思，类似于 request(10)的操作）调用 <code>onComplete</code> 方法，值得注意的是<strong>从最后一个元素发出到 <code>onComplete</code> 之间并不会有 <code>period</code> 长度的延迟</strong>。</p>
+<h3 id="range-rangeLong"><a href="#range-rangeLong" class="headerlink" title="range/rangeLong"></a>range/rangeLong</h3><p>如果你<strong>不需要延迟发送数据</strong>，但是需要确定一个数据的范围可以采用 <code>range</code> 或 <code>rangeLong</code>，后者的数据类型是 <code>long</code>，可以使用的范围更加广，其它完全是一样的，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//int 类型范围</span><br><span class="line">Flowable.range(0,5)</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br><span class="line"></span><br><span class="line">//long 类型范围</span><br><span class="line">Flowable.rangeLong(Integer.MAX_VALUE,5L)</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br></pre></td></tr></table></figure></p>
+<p>上面输出都是从第一个数开始直接输出到最后一个数（第二个参数也是数量，而不是尾数）然后调用 <code>onComplete</code> 事件，中间没有间隔延迟。</p>
+<h3 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h3><p>之前说过一个被观察者可以订阅多个观察者，如果需要每个<strong>观察者被订阅</strong>的时候都<strong>重新创建被观察者（一对一）</strong>，则可以使用 <code>defer</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Flowable&lt;String&gt; flowable = Flowable.defer(new Callable&lt;Publisher&lt;String&gt;&gt;()&#123;</span><br><span class="line">  @Override</span><br><span class="line">  public Publisher&lt;String&gt; call() throws Exception&#123;</span><br><span class="line">      return Flowable.just(&quot;1&quot;,&quot;2&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//订阅第一个观察者</span><br><span class="line">flowable.subscribe(str -&gt; Log.i(&quot;tag&quot;,str));</span><br><span class="line">//订阅第二个观察者</span><br><span class="line">flowable.subscribe(str -&gt; Log.i(&quot;tag&quot;,str));</span><br></pre></td></tr></table></figure></p>
+<p>上面会输出<strong>两次</strong>（1，2）而且是<strong>顺序输出</strong>，只有当<strong>第一个观察者执行完</strong>后才会<strong>去创建第二个被观察者</strong>然后订阅观察者，然后才开始（第二个被观察者）发送事件消息。</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>本文主要介绍了 RxJava 中的常用创建操作符。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/rxjava2.x/RxJava2.x 快速入门.html" rel="next" title="RxJava2.x 使用详解（一）快速入门">
+                <i class="fa fa-chevron-left"></i> RxJava2.x 使用详解（一）快速入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/rxjava2.x/RxJava2.x 使用详解（三）过滤操作符.html" rel="prev" title="RxJava2.x 使用详解（三）过滤操作符">
+                RxJava2.x 使用详解（三）过滤操作符 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wei</p>
+              <p class="site-description motion-element" itemprop="description">来日不可待，去日不可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#just"><span class="nav-number">1.</span> <span class="nav-text">just</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fromArray"><span class="nav-number">2.</span> <span class="nav-text">fromArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#empty"><span class="nav-number">3.</span> <span class="nav-text">empty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#error"><span class="nav-number">4.</span> <span class="nav-text">error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#never"><span class="nav-number">5.</span> <span class="nav-text">never</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fromIterable"><span class="nav-number">6.</span> <span class="nav-text">fromIterable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#timer"><span class="nav-number">7.</span> <span class="nav-text">timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#interval"><span class="nav-number">8.</span> <span class="nav-text">interval</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#intervalRange"><span class="nav-number">9.</span> <span class="nav-text">intervalRange</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#range-rangeLong"><span class="nav-number">10.</span> <span class="nav-text">range/rangeLong</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#defer"><span class="nav-number">11.</span> <span class="nav-text">defer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结尾"><span class="nav-number">12.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wei</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

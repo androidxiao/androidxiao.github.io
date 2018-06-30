@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxJava2.x," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
+<meta name="keywords" content="RxJava2.x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
+<meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html">
+<meta property="og:site_name" content="Android开发笔记">
+<meta property="og:description" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-06-30T17:19:59.848Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
+<meta name="twitter:description" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html"/>
+
+
+
+
+
+  <title>RxJava 2.x 使用详解(四) 合并聚合操作符 | Android开发笔记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Android开发笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程语言">
+          <a href="/categories/code" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />
+            
+            编程语言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-git笔记">
+          <a href="/categories/git" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-git"></i> <br />
+            
+            Git笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rxjava2.x笔记">
+          <a href="/tags/rxjava2-x" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
+            
+            RxJava2.x笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-工作点点">
+          <a href="/categories/in-work" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tasks"></i> <br />
+            
+            工作点点
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-杂谈">
+          <a href="/categories/writing" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-edit"></i> <br />
+            
+            杂谈
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxJava 2.x 使用详解(四) 合并聚合操作符</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-18T04:37:00+08:00">
+                2018-06-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2.x笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>RxJava 2.x 使用详解(四) 合并聚合操作符</strong><br><a id="more"></a></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本章讲解一下 RxJava 中<strong>合并操作符</strong>和<strong>聚合操作符</strong>，主要用于合并多个被观察者或者把一个观察者的多个元素聚合成一个元素。</p>
+<h3 id="startWith-startWithArray"><a href="#startWith-startWithArray" class="headerlink" title="startWith / startWithArray"></a>startWith / startWithArray</h3><p>如果你需要在<strong>被观察发送元素之前追加数据或者追加新的被观察者</strong>，这时候可以使用 <code>startWith</code> 操作符，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(4, 5, 6)</span><br><span class="line">        .startWith(Flowable.just(1, 2, 3))</span><br><span class="line">        .startWith(0)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出结果为 “0,1,2,3,4,5,6”,如果你需要<strong>追加多个元素</strong>，则需要使用另外一个操作符 <code>startWithArray</code>，一次追加多个元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(4, 5, 6)</span><br><span class="line">        .startWithArray(1, 2, 3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出结果为 “1,2,3,4,5,6”，实际上上述两个操作符从源码中观察，都可以发现它实际上使用的 <code>concat</code> 和 <code>concatArray</code> 操作符去实现的。下面我们来说明下这两个操作符。</p>
+<h3 id="concat-concatArray"><a href="#concat-concatArray" class="headerlink" title="concat / concatArray"></a>concat / concatArray</h3><p><code>concat</code> 操作符可以连接<strong>最多4个的被观察者</strong>，他们的顺序是<strong>串行执行</strong>的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.concat(</span><br><span class="line">        Flowable.just(1,2,3),</span><br><span class="line">        Flowable.just(4,5,6))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出结果为 “1,2,3,4,5,6”，如果<strong>需要多于 4 个被观察合并在一起</strong>，可以使用 <code>concatArray</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flowable.concatArray(Flowable.just(1), Flowable.just(2))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<h3 id="merge-mergeArray"><a href="#merge-mergeArray" class="headerlink" title="merge / mergeArray"></a>merge / mergeArray</h3><p>上面说到的 <code>concat</code> 操作符，对于<strong>每一个被观察者都是按照顺序串行执行的</strong>，接下来介绍的 <code>merge</code> 操作符也是合并多个被观察者，但他们合并后是<strong>按照时间线并行执行</strong>，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.merge(</span><br><span class="line">        Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS),</span><br><span class="line">        Flowable.intervalRange(3, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子中，两个被观察将并行执行，输出结果 “0,3-&gt;1,4-&gt;2,5”，可以直观的地观察到和 <code>concat</code> 操作符的区别。</p>
+<p>和 <code>concat</code> 操作符一样，<code>merge</code> 也是<strong>最多只能合并4个被观察者</strong>，可以使用 <code>mergeArray</code> 来合并多个被观察者，这里就不举例子了。</p>
+<h3 id="concatDelayError-mergeDelayError"><a href="#concatDelayError-mergeDelayError" class="headerlink" title="concatDelayError / mergeDelayError"></a>concatDelayError / mergeDelayError</h3><p>使用 <code>concat</code> 和 <code>merge</code> 操作符时，<strong>如果遇到其中一个被观察者发出 <code>onError</code> 事件则会马上终止其他被观察者的事件</strong>，如果希望 <code>onError</code> 事件<strong>推迟到其它被观察者都结束后才触发</strong>，可以使用对应的 <code>concatDelayError</code> 或者 <code>mergeDelayError</code> 操作符，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.mergeDelayError(</span><br><span class="line">        Flowable.create(s -&gt; s.onError(new NullPointerException()), BackpressureStrategy.ERROR),</span><br><span class="line">        Flowable.intervalRange(3, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p><code>concatArray</code> 和 <code>mergeArray</code> 也可以使用对应的操作符：<code>concatArrayDelayError</code> 和 <code>mergeArrayDelayError</code>，这里就不一一列举例子了。</p>
+<h3 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h3><p><strong>多个被观察者压缩成单个的操作可以使用 <code>zip</code> 操作符，如果多个被观察者数量不同，则以少的为基准</strong>，可以使用 <code>Funtions</code> 来自定义 <code>zip</code> 操作（zipper）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.zip(</span><br><span class="line">        Flowable.just(1, 2, 3),</span><br><span class="line">        Flowable.just(4, 5),</span><br><span class="line">        (int1, int2) -&gt; int1 + int2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中输出的结果为 5、7。</p>
+<p>对于 <code>delayError</code> 的操作是通过参数传递进去的，在 <code>zipper</code> 参数之后。<strong><code>zip</code> 操作符最多接受 9 个被观察者</strong>，这里的 <code>zipper</code> 使用到的 <code>Functions</code> 按照被观察个数分别对应 <code>Function</code>、<code>BiFunction</code> 和 <code>Function3 - Function9</code>，其中的 <code>apply</code> 方法用于对应的操作。</p>
+<h3 id="combineLatest"><a href="#combineLatest" class="headerlink" title="combineLatest"></a>combineLatest</h3><p><code>combineLatest</code> 类似 <code>zip</code> 操作符，但它合并时机和 <code>zip</code> 不一样，<code>zip</code> 是<strong>一对一合并压缩</strong>，<code>combineLatest</code> 则是在<strong>同一个时间线上，合并最后的元素</strong>，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.combineLatest(</span><br><span class="line">        Flowable.just(1L, 2L, 3L),</span><br><span class="line">        Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS),</span><br><span class="line">        (long1, long2) -&gt; long1 + long2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子只会合并 3+0 、3+1 、3+2 ，即输出3、4、5这几个元素。对于第一个观察者中1、2元素被忽略了。</p>
+<h3 id="combineLatestDelayError"><a href="#combineLatestDelayError" class="headerlink" title="combineLatestDelayError"></a>combineLatestDelayError</h3><p><code>combineLatest</code> 要处理 <code>delayError</code> 问题，需要使用 <code>combineLatestDelayError</code> 操作符，这个操作符<strong>把 <code>combiner的Funtions</code> 用 <code>Object[]</code> 数组的 <code>Funtion</code> 来代替，而且是作为第一个参数</strong>，上述的 <code>combineLatest</code> 例子使用 <code>combineLatestDelayError</code> 可以改写成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.combineLatestDelayError(</span><br><span class="line">         objects -&gt; (Long) objects[0] + (Long) objects[1],</span><br><span class="line">         Flowable.just(1L, 2L, 3L),</span><br><span class="line">         Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">         .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<h3 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h3><p>下面我们来介绍<strong>聚合操作符，要把一个被观察者的所有元素都聚合成单一的元素</strong>，可以使用 <code>reduce</code> 操作符，比如把所有元素都加起来，代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .reduce((last, item) -&gt; &#123;</span><br><span class="line">            Log.i(&quot;tag&quot;, last + &quot;,&quot; + item);</span><br><span class="line">            return last + item;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>可以看到一开始，先执行 1+2，然后用 1+2 的结果和 3 相加，最后输出 6，<strong>相当于把三个元素聚合在一起</strong>。</p>
+<h3 id="count"><a href="#count" class="headerlink" title="count"></a>count</h3><p>如果要<strong>统计一个被观察者发送多少个元素</strong>可以使用 <code>count</code> 方法,其代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .count()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p><code>count</code> 操作符会把<strong>观察者转换成 <code>Single&lt;Long&gt;</code> 类型的被观察者</strong>，上述代码会输出3（即原被观察者发送的元素数量）。</p>
+<h3 id="collect"><a href="#collect" class="headerlink" title="collect"></a>collect</h3><p><code>collect</code> 和 <code>reduce</code> 操作相似，不过<strong>它是需要自己定义收集的容器和收集逻辑</strong>，下面举个例子，利用 ArrayList 收集发射的元素：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .collect(</span><br><span class="line">                new Callable&lt;ArrayList&lt;Integer&gt;&gt;() &#123;//创建收集容器</span><br><span class="line">                    @Override</span><br><span class="line">                    public ArrayList&lt;Integer&gt; call() throws Exception &#123;</span><br><span class="line">                        return new ArrayList&lt;&gt;();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, new BiConsumer&lt;ArrayList&lt;Integer&gt;, Integer&gt;() &#123;//收集操作</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(ArrayList&lt;Integer&gt; list, Integer integer)</span><br><span class="line">                            throws Exception &#123;//前者容器，后者数据</span><br><span class="line">                        list.add(integer);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br><span class="line"></span><br><span class="line">//lambda写法</span><br><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .collect(ArrayList::new, ArrayList::add)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述操作最终会输出 [1, 2, 3] 这个 ArrayList 元素，相当于收集了所有元素的结果。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/rxjava2.x/RxJava2.x 使用详解（三）过滤操作符.html" rel="next" title="RxJava2.x 使用详解（三）过滤操作符">
+                <i class="fa fa-chevron-left"></i> RxJava2.x 使用详解（三）过滤操作符
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html" rel="prev" title="RxJava 2.x 使用详解(五) 条件操作符">
+                RxJava 2.x 使用详解(五) 条件操作符 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wei</p>
+              <p class="site-description motion-element" itemprop="description">来日不可待，去日不可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#startWith-startWithArray"><span class="nav-number">2.</span> <span class="nav-text">startWith / startWithArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#concat-concatArray"><span class="nav-number">3.</span> <span class="nav-text">concat / concatArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#merge-mergeArray"><span class="nav-number">4.</span> <span class="nav-text">merge / mergeArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#concatDelayError-mergeDelayError"><span class="nav-number">5.</span> <span class="nav-text">concatDelayError / mergeDelayError</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zip"><span class="nav-number">6.</span> <span class="nav-text">zip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#combineLatest"><span class="nav-number">7.</span> <span class="nav-text">combineLatest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#combineLatestDelayError"><span class="nav-number">8.</span> <span class="nav-text">combineLatestDelayError</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reduce"><span class="nav-number">9.</span> <span class="nav-text">reduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count"><span class="nav-number">10.</span> <span class="nav-text">count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#collect"><span class="nav-number">11.</span> <span class="nav-text">collect</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wei</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

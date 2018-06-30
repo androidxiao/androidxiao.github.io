@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RxJava2.x," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="RxJava 2.x 使用详解(六) 变换操作符">
+<meta name="keywords" content="RxJava2.x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava 2.x 使用详解(六) 变换操作符">
+<meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html">
+<meta property="og:site_name" content="Android开发笔记">
+<meta property="og:description" content="RxJava 2.x 使用详解(六) 变换操作符">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-06-30T17:20:13.374Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava 2.x 使用详解(六) 变换操作符">
+<meta name="twitter:description" content="RxJava 2.x 使用详解(六) 变换操作符">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html"/>
+
+
+
+
+
+  <title>RxJava 2.x 使用详解(六) 变换操作符 | Android开发笔记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Android开发笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-编程语言">
+          <a href="/categories/code" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />
+            
+            编程语言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-git笔记">
+          <a href="/categories/git" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-git"></i> <br />
+            
+            Git笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-rxjava2.x笔记">
+          <a href="/tags/rxjava2-x" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
+            
+            RxJava2.x笔记
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-工作点点">
+          <a href="/categories/in-work" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tasks"></i> <br />
+            
+            工作点点
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-杂谈">
+          <a href="/categories/writing" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-edit"></i> <br />
+            
+            杂谈
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxJava 2.x 使用详解(六) 变换操作符</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-20T04:37:00+08:00">
+                2018-06-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2.x笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>RxJava 2.x 使用详解(六) 变换操作符</strong><br><a id="more"></a></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本节介绍 RxJava 的变换操作符</p>
+<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>基本的转换操作符，可以<strong>把每一个元素转换成新的元素发射</strong>，接收一个 <code>Function&lt;T,R&gt;</code> 作为转换逻辑的操作，下面是例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .map(integer -&gt; &quot;int&quot; + integer)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子中 <code>map</code> 操作符返回了 <code>Flowable&lt;String&gt;</code>，最终输出的结果为：int1、int2、int3。</p>
+<h3 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h3><p>上面的 <code>Map</code> 操作符是<strong>把每一个元素转换成一个新的元素</strong>，但是 <code>flatMap</code> 操作符是<strong>把每一个元素转换成新的被观察者，每个被观察者发射的元素将会合并成新的被观察者，这些元素顺序输出</strong>，例如下面的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .flatMap((Function&lt;Integer, Publisher&lt;?&gt;&gt;)</span><br><span class="line">                integer -&gt; Flowable.just(&quot;a&quot;,integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中把每一个 <code>just</code> 发射的元素转换成新的 <code>Flowable</code>，而每一个新的 <code>Flowable</code> 额外添加一个“a”元素，所以上述的例子输出结果是：a、1、a、2、a、3。</p>
+<h3 id="flatMapIterable"><a href="#flatMapIterable" class="headerlink" title="flatMapIterable"></a>flatMapIterable</h3><p><code>flatMapIterable</code> 与 <code>flatMap</code> 类似，但是 <code>flatMapIterable</code> 是<strong>把每一个元素转换成 <code>Iterable</code></strong>，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .flatMapIterable((Function&lt;Integer, Iterable&lt;?&gt;&gt;)</span><br><span class="line">                integer -&gt; Arrays.asList(&quot;a&quot;, integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码把每一个元素转换成一个 List，每个 list 以元素“a”开头，所以上述的例子输出结果是：a、1、a、2、a、3。</p>
+<h3 id="concatMap"><a href="#concatMap" class="headerlink" title="concatMap"></a>concatMap</h3><p><code>concatMap</code> 操作符 <code>合flatMap</code> 操作符类似，接收的参数和转换都是类似的，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .concatMap(integer -&gt; Flowable.just(&quot;a&quot;, integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述的例子输出结果是：a、1、a、2、a、3。<code>flatMap</code> 操作符内部是使用 <code>merge</code> 合并元素，<code>concatMap</code>操作符则是通过 <code>concat</code> 合并元素，前者<strong>可能会出现元素交错问题</strong>，后者<strong>严格按照顺序发射</strong>。另外 <code>concatMap</code> 也有类似的 <code>concatMapIterable</code> 操作符。</p>
+<h3 id="switchMap"><a href="#switchMap" class="headerlink" title="switchMap"></a>switchMap</h3><p><code>switchMap</code> 用法与 <code>flatMap</code> 类似，<strong>但是转换出来的每一个新的数据（被观察者）发射会取代掉前一个被观察者</strong>，如下例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .switchMap(integer -&gt;</span><br><span class="line">                Flowable.timer(1, TimeUnit.SECONDS)</span><br><span class="line">                        .map(longValue -&gt; integer)</span><br><span class="line">        )//延迟1s发送元素</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子最终只会输出 3 这个元素，其它元素被覆盖替代掉不再发送。</p>
+<h3 id="cast"><a href="#cast" class="headerlink" title="cast"></a>cast</h3><p><strong>强制转换每一个元素的类型，内部调用map操作符来进行转换</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .cast(Number.class)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码把每个元素都转换成 <code>Number</code> 类型，然后再发射。</p>
+<h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><p>扫描每一个元素，<strong>第一个元素将忽略，从第二个元素开始</strong>（可以获得上一个元素的值）进行变换后返回，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .scan((last, item) -&gt; &#123;</span><br><span class="line">            Log.i(&quot;tag&quot;, &quot;last:&quot; + String.valueOf(last));</span><br><span class="line">            Log.i(&quot;tag&quot;, &quot;item:&quot; + String.valueOf(item));</span><br><span class="line">            return item+1;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出结果为1、3、4。</p>
+<h3 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h3><p><code>buffer</code> 操作符是<strong>把多个元素打包成一个元素一次过发送数据</strong>，例如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .buffer(3)//三个元素打包成一个元素</span><br><span class="line">        .subscribe(intList -&gt; Log.i(&quot;tag&quot;, intList.toString()));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码把三个元素组合成一个List发送，输出结果为：[1, 2, 3]、[4, 5]。</p>
+<h3 id="toList"><a href="#toList" class="headerlink" title="toList"></a>toList</h3><p><strong>把所有元素转换成一个 <code>List</code> 一次过发送出去</strong>，如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .toList()</span><br><span class="line">        .subscribe(intList -&gt; Log.i(&quot;tag&quot;, intList.toString()));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出 [1, 2, 3, 4, 5]。除了 <code>toList</code> 操作符以外，还有 <code>toSortedList</code> 操作符，而且 <code>toSortedList</code> 操作符也<strong>支持自定义排序方式</strong>。</p>
+<h3 id="groupBy"><a href="#groupBy" class="headerlink" title="groupBy"></a>groupBy</h3><p><code>groupBy</code> 操作符通过 <code>Function</code> 接收每个数据的分组key，然后返回 <code>GroupedFlowable</code>，使用者可以再订阅这个被观察者进行数据输出，由于使用lambda表达式可能加大理解难度，这里给出普通写法的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .groupBy(new Function&lt;Integer, String&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public String apply(Integer integer) throws Exception &#123;</span><br><span class="line">                //这里的返回值是分组的key</span><br><span class="line">                return integer &gt; 2 ? &quot;A组&quot; : &quot;B组&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(new Consumer&lt;GroupedFlowable&lt;String, Integer&gt;&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(GroupedFlowable&lt;String, Integer&gt; groupedFlowable)</span><br><span class="line">                    throws Exception &#123;</span><br><span class="line">                //订阅转换成GroupedFlowable</span><br><span class="line">                groupedFlowable.subscribe(new Consumer&lt;Integer&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(Integer integer) throws Exception &#123;</span><br><span class="line">                        String key = groupedFlowable.getKey();</span><br><span class="line">                        Log.i(&quot;tag&quot;, key + &quot;:&quot; + String.valueOf(integer));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上述代码将输出：“B组:1、B组:2、A组:3、A组:4、A组:5”，上述代码转换成lambda表达式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .groupBy(integer -&gt; integer &gt; 2 ? &quot;A组&quot; : &quot;B组&quot;)</span><br><span class="line">        .subscribe(groupedFlowable -&gt;</span><br><span class="line">                groupedFlowable.subscribe(</span><br><span class="line">                        integer -&gt; Log.i(&quot;tag&quot;, groupedFlowable.getKey()</span><br><span class="line">                                + &quot;:&quot; + String.valueOf(integer))</span><br><span class="line">                ));</span><br></pre></td></tr></table></figure></p>
+<h3 id="toMap"><a href="#toMap" class="headerlink" title="toMap"></a>toMap</h3><p>熟悉了 <code>groupBy</code> 后，<code>toMap</code> 也是类似的，<strong>可以通过自定义key、value转换成对应的map</strong>，如下例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .toMap(integer -&gt; &quot;key&quot; + integer)//第一个参数Function返回Map的key</span><br><span class="line">        .subscribe(map -&gt; Log.i(&quot;tag&quot;, map.toString()));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出：“{key5=5, key2=2, key4=4, key1=1, key3=3}”，另外 <code>toMap</code> 还可以支持自定义每个item对应的value值（传入第二个Function处理）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html" rel="next" title="RxJava 2.x 使用详解(五) 条件操作符">
+                <i class="fa fa-chevron-left"></i> RxJava 2.x 使用详解(五) 条件操作符
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wei</p>
+              <p class="site-description motion-element" itemprop="description">来日不可待，去日不可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Map"><span class="nav-number">2.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flatMap"><span class="nav-number">3.</span> <span class="nav-text">flatMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flatMapIterable"><span class="nav-number">4.</span> <span class="nav-text">flatMapIterable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#concatMap"><span class="nav-number">5.</span> <span class="nav-text">concatMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#switchMap"><span class="nav-number">6.</span> <span class="nav-text">switchMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cast"><span class="nav-number">7.</span> <span class="nav-text">cast</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scan"><span class="nav-number">8.</span> <span class="nav-text">scan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer"><span class="nav-number">9.</span> <span class="nav-text">buffer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#toList"><span class="nav-number">10.</span> <span class="nav-text">toList</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groupBy"><span class="nav-number">11.</span> <span class="nav-text">groupBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#toMap"><span class="nav-number">12.</span> <span class="nav-text">toMap</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wei</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
