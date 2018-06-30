@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="RxJava2.x," />
+  <meta name="keywords" content="RxJava2," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
-<meta name="keywords" content="RxJava2.x">
+<meta name="description" content="前言本章讲解一下 RxJava 中合并操作符和聚合操作符，主要用于合并多个被观察者或者把一个观察者的多个元素聚合成一个元素。 startWith / startWithArray如果你需要在被观察发送元素之前追加数据或者追加新的被观察者，这时候可以使用 startWith 操作符，例子如下：1234Flowable.just(4, 5, 6)        .startWith(Flowable">
+<meta name="keywords" content="RxJava2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
 <meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html">
 <meta property="og:site_name" content="Android开发笔记">
-<meta property="og:description" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
+<meta property="og:description" content="前言本章讲解一下 RxJava 中合并操作符和聚合操作符，主要用于合并多个被观察者或者把一个观察者的多个元素聚合成一个元素。 startWith / startWithArray如果你需要在被观察发送元素之前追加数据或者追加新的被观察者，这时候可以使用 startWith 操作符，例子如下：1234Flowable.just(4, 5, 6)        .startWith(Flowable">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-30T17:19:59.848Z">
+<meta property="og:updated_time" content="2018-06-30T17:30:53.536Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
-<meta name="twitter:description" content="RxJava 2.x 使用详解(四) 合并聚合操作符">
+<meta name="twitter:description" content="前言本章讲解一下 RxJava 中合并操作符和聚合操作符，主要用于合并多个被观察者或者把一个观察者的多个元素聚合成一个元素。 startWith / startWithArray如果你需要在被观察发送元素之前追加数据或者追加新的被观察者，这时候可以使用 startWith 操作符，例子如下：1234Flowable.just(4, 5, 6)        .startWith(Flowable">
 
 
 
@@ -222,7 +222,7 @@
       
         
         <li class="menu-item menu-item-rxjava2.x笔记">
-          <a href="/tags/rxjava2-x" rel="section">
+          <a href="/categories/rxjava2" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
             
@@ -345,8 +345,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2.x笔记</span>
+                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2笔记</span>
                   </a>
                 </span>
 
@@ -382,7 +382,7 @@
       
 
       
-        <p><strong>RxJava 2.x 使用详解(四) 合并聚合操作符</strong><br><a id="more"></a></p>
+        <a id="more"></a>
 <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本章讲解一下 RxJava 中<strong>合并操作符</strong>和<strong>聚合操作符</strong>，主要用于合并多个被观察者或者把一个观察者的多个元素聚合成一个元素。</p>
 <h3 id="startWith-startWithArray"><a href="#startWith-startWithArray" class="headerlink" title="startWith / startWithArray"></a>startWith / startWithArray</h3><p>如果你需要在<strong>被观察发送元素之前追加数据或者追加新的被观察者</strong>，这时候可以使用 <code>startWith</code> 操作符，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(4, 5, 6)</span><br><span class="line">        .startWith(Flowable.just(1, 2, 3))</span><br><span class="line">        .startWith(0)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
 <p>上述代码输出结果为 “0,1,2,3,4,5,6”,如果你需要<strong>追加多个元素</strong>，则需要使用另外一个操作符 <code>startWithArray</code>，一次追加多个元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(4, 5, 6)</span><br><span class="line">        .startWithArray(1, 2, 3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
@@ -423,7 +423,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+            <a href="/tags/RxJava2/" rel="tag"># RxJava2</a>
           
         </div>
       
@@ -536,7 +536,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -547,7 +547,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

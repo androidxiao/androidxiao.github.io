@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="RxJava2.x," />
+  <meta name="keywords" content="RxJava2," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="RxJava2.x 使用详解（三）过滤操作符">
-<meta name="keywords" content="RxJava2.x">
+<meta name="description" content="前言前面说到 RxJava 创建操作符，这一节说说过滤操作符，记得上节说到 interval 操作符如果没有其它限制的话就会无限发送 onNext 事件，永远也不会调用 onComplete 事件，如果需要限制的话，可以使用一些过滤操作符进行限制。 filter先说一个基本的过滤操作符 filter，可以自己设定任意的规则来过滤数据，比如过滤大于等于 2 的元素：123456789Flowabl">
+<meta name="keywords" content="RxJava2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RxJava2.x 使用详解（三）过滤操作符">
 <meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/RxJava2.x 使用详解（三）过滤操作符.html">
 <meta property="og:site_name" content="Android开发笔记">
-<meta property="og:description" content="RxJava2.x 使用详解（三）过滤操作符">
+<meta property="og:description" content="前言前面说到 RxJava 创建操作符，这一节说说过滤操作符，记得上节说到 interval 操作符如果没有其它限制的话就会无限发送 onNext 事件，永远也不会调用 onComplete 事件，如果需要限制的话，可以使用一些过滤操作符进行限制。 filter先说一个基本的过滤操作符 filter，可以自己设定任意的规则来过滤数据，比如过滤大于等于 2 的元素：123456789Flowabl">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-30T17:19:11.060Z">
+<meta property="og:updated_time" content="2018-06-30T17:30:49.473Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava2.x 使用详解（三）过滤操作符">
-<meta name="twitter:description" content="RxJava2.x 使用详解（三）过滤操作符">
+<meta name="twitter:description" content="前言前面说到 RxJava 创建操作符，这一节说说过滤操作符，记得上节说到 interval 操作符如果没有其它限制的话就会无限发送 onNext 事件，永远也不会调用 onComplete 事件，如果需要限制的话，可以使用一些过滤操作符进行限制。 filter先说一个基本的过滤操作符 filter，可以自己设定任意的规则来过滤数据，比如过滤大于等于 2 的元素：123456789Flowabl">
 
 
 
@@ -222,7 +222,7 @@
       
         
         <li class="menu-item menu-item-rxjava2.x笔记">
-          <a href="/tags/rxjava2-x" rel="section">
+          <a href="/categories/rxjava2" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
             
@@ -345,8 +345,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2.x笔记</span>
+                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2笔记</span>
                   </a>
                 </span>
 
@@ -382,7 +382,7 @@
       
 
       
-        <p><strong>RxJava2.x 使用详解（三）过滤操作符</strong><br><a id="more"></a></p>
+        <a id="more"></a>
 <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前面说到 RxJava <strong>创建操作符</strong>，这一节说说<strong>过滤操作符</strong>，记得上节说到 <code>interval</code> 操作符如果没有其它限制的话就会无限发送 <code>onNext</code> 事件，永远也不会调用 <code>onComplete</code> 事件，如果需要限制的话，可以使用一些<strong>过滤操作符</strong>进行限制。</p>
 <h3 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h3><p>先说一个基本的过滤操作符 <code>filter</code>，可以自己设定任意的规则来过滤数据，比如过滤大于等于 2 的元素：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1,2,3,4)</span><br><span class="line">        .filter(new Predicated&lt;Integer&gt;()&#123;</span><br><span class="line">          @Override</span><br><span class="line">          public boolean test(Integer integer) throws Exception&#123;</span><br><span class="line">              //过滤出 &gt;=2 的数据</span><br><span class="line">              return integer &gt;=2;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;,String.valueOf(integer));</span><br></pre></td></tr></table></figure></p>
 <p>上面的结果只会输出 2 和 3，因为 <code>boolean test(T t)</code> 方法返回 true 则表示元素有效，否则则为无效抛弃。</p>
@@ -438,7 +438,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+            <a href="/tags/RxJava2/" rel="tag"># RxJava2</a>
           
         </div>
       
@@ -551,7 +551,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -562,7 +562,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

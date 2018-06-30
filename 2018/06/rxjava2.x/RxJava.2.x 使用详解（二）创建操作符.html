@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="RxJava2.x," />
+  <meta name="keywords" content="RxJava2," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="RxJava2.x 使用详解（二）创建操作符">
-<meta name="keywords" content="RxJava2.x">
+<meta name="description" content="just第一篇中说到的被观察者可以采用 Flowable、Observable、Single等等的 create 方法来实现，如果对于只是发送几个数据来说，这个过程未免十分复杂繁琐，可以使用 just 操作符来简化：12Flowable.just(&amp;quot;test1&amp;quot;,&amp;quot;test2&amp;quot;)        .subscribe(str -&amp;gt; Log.i(&amp;quo">
+<meta name="keywords" content="RxJava2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RxJava2.x 使用详解（二）创建操作符">
 <meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/RxJava.2.x 使用详解（二）创建操作符.html">
 <meta property="og:site_name" content="Android开发笔记">
-<meta property="og:description" content="RxJava2.x 使用详解（二）创建操作符">
+<meta property="og:description" content="just第一篇中说到的被观察者可以采用 Flowable、Observable、Single等等的 create 方法来实现，如果对于只是发送几个数据来说，这个过程未免十分复杂繁琐，可以使用 just 操作符来简化：12Flowable.just(&amp;quot;test1&amp;quot;,&amp;quot;test2&amp;quot;)        .subscribe(str -&amp;gt; Log.i(&amp;quo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-30T17:11:15.373Z">
+<meta property="og:updated_time" content="2018-06-30T17:30:51.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava2.x 使用详解（二）创建操作符">
-<meta name="twitter:description" content="RxJava2.x 使用详解（二）创建操作符">
+<meta name="twitter:description" content="just第一篇中说到的被观察者可以采用 Flowable、Observable、Single等等的 create 方法来实现，如果对于只是发送几个数据来说，这个过程未免十分复杂繁琐，可以使用 just 操作符来简化：12Flowable.just(&amp;quot;test1&amp;quot;,&amp;quot;test2&amp;quot;)        .subscribe(str -&amp;gt; Log.i(&amp;quo">
 
 
 
@@ -222,7 +222,7 @@
       
         
         <li class="menu-item menu-item-rxjava2.x笔记">
-          <a href="/tags/rxjava2-x" rel="section">
+          <a href="/categories/rxjava2" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
             
@@ -345,8 +345,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2.x笔记</span>
+                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2笔记</span>
                   </a>
                 </span>
 
@@ -382,7 +382,7 @@
       
 
       
-        <p><strong>RxJava2.x 使用详解（二）创建操作符</strong><br><a id="more"></a></p>
+        <a id="more"></a>
 <h3 id="just"><a href="#just" class="headerlink" title="just"></a>just</h3><p>第一篇中说到的被观察者可以采用 <code>Flowable</code>、<code>Observable</code>、<code>Single</code>等等的 <code>create</code> 方法来实现，如果对于只是发送几个数据来说，这个过程未免十分复杂繁琐，可以使用 <code>just</code> 操作符来简化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;test1&quot;,&quot;test2&quot;)</span><br><span class="line">        .subscribe(str -&gt; Log.i(&quot;tag&quot;,str));</span><br></pre></td></tr></table></figure></p>
 <p>上述代码相当于顺序调用 <code>onNext(&quot;test1&quot;)</code> 和 <code>onNext(&quot;test2&quot;)</code>，然后调用 <code>onComplete</code> 方法。</p>
 <p>另外，还可以使用 <code>Observable</code>、<code>Single</code> 或者 <code>Maybe</code> 来调用这个操作符。对于 <code>Completable</code> 则不能使用（因为没有 <code>onNext</code> 事件），对于 <code>Flowable</code> 和 <code>Observable</code> 最多能接收 10 个参数，也就是发送 10 个数据，而 <code>Single</code> 和 <code>Maybe</code> 只能接收 1 个参数（只能发送一次 <code>onNext</code> 事件）。</p>
@@ -425,7 +425,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+            <a href="/tags/RxJava2/" rel="tag"># RxJava2</a>
           
         </div>
       
@@ -538,7 +538,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -549,7 +549,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

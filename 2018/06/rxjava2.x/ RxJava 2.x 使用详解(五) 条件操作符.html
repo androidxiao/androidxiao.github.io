@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="RxJava2.x," />
+  <meta name="keywords" content="RxJava2," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="RxJava 2.x 使用详解(五) 条件操作符">
-<meta name="keywords" content="RxJava2.x">
+<meta name="description" content="前言本节将会介绍条件操作符，用于控制被观察者开始、停止、跳过的各种条件操作符。 all要判断所有元素是否满足某个条件，可以使用 all 操作符，它接受一个 Predicate，其中的 test 方法用于判断某个元素是否满足条件，最终输出是否所有元素都满足条件，比如下面例子：123Flowable.just(1, 2, 3)        .all(integer -&amp;gt; integer &amp;g">
+<meta name="keywords" content="RxJava2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RxJava 2.x 使用详解(五) 条件操作符">
 <meta property="og:url" content="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html">
 <meta property="og:site_name" content="Android开发笔记">
-<meta property="og:description" content="RxJava 2.x 使用详解(五) 条件操作符">
+<meta property="og:description" content="前言本节将会介绍条件操作符，用于控制被观察者开始、停止、跳过的各种条件操作符。 all要判断所有元素是否满足某个条件，可以使用 all 操作符，它接受一个 Predicate，其中的 test 方法用于判断某个元素是否满足条件，最终输出是否所有元素都满足条件，比如下面例子：123Flowable.just(1, 2, 3)        .all(integer -&amp;gt; integer &amp;g">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-30T17:20:09.167Z">
+<meta property="og:updated_time" content="2018-06-30T17:30:56.298Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava 2.x 使用详解(五) 条件操作符">
-<meta name="twitter:description" content="RxJava 2.x 使用详解(五) 条件操作符">
+<meta name="twitter:description" content="前言本节将会介绍条件操作符，用于控制被观察者开始、停止、跳过的各种条件操作符。 all要判断所有元素是否满足某个条件，可以使用 all 操作符，它接受一个 Predicate，其中的 test 方法用于判断某个元素是否满足条件，最终输出是否所有元素都满足条件，比如下面例子：123Flowable.just(1, 2, 3)        .all(integer -&amp;gt; integer &amp;g">
 
 
 
@@ -222,7 +222,7 @@
       
         
         <li class="menu-item menu-item-rxjava2.x笔记">
-          <a href="/tags/rxjava2-x" rel="section">
+          <a href="/categories/rxjava2" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-android"></i> <br />
             
@@ -345,8 +345,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2-x/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2.x笔记</span>
+                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2笔记</span>
                   </a>
                 </span>
 
@@ -382,7 +382,7 @@
       
 
       
-        <p><strong>RxJava 2.x 使用详解(五) 条件操作符</strong><br><a id="more"></a></p>
+        <a id="more"></a>
 <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本节将会介绍<strong>条件操作符</strong>，用于控制<strong>被观察者开始、停止、跳过的各种条件操作符</strong>。</p>
 <h3 id="all"><a href="#all" class="headerlink" title="all"></a>all</h3><p><strong>要判断所有元素是否满足某个条件</strong>，可以使用 <code>all</code> 操作符，它接受一个 <code>Predicate</code>，其中的 <code>test</code> 方法<strong>用于判断某个元素是否满足条件，最终输出是否所有元素都满足条件</strong>，比如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .all(integer -&gt; integer &gt;= 0)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
 <p>上述例子是判断是否所有元素都大于等于0，<code>all</code> 操作符会把<strong>被观察者转换成 <code>Single&lt;Boolean&gt;</code> 类型的被观察者，最终输出结果为true</strong>。</p>
@@ -427,7 +427,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/RxJava2-x/" rel="tag"># RxJava2.x</a>
+            <a href="/tags/RxJava2/" rel="tag"># RxJava2</a>
           
         </div>
       
@@ -540,7 +540,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -551,7 +551,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

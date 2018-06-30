@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Git," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -79,18 +79,16 @@
 
 
 
-<meta name="description" content="需求是无穷无尽的！！！">
-<meta name="keywords" content="Git">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Feature分支">
-<meta property="og:url" content="http://yoursite.com/2018/05/git笔记/Feature分支.html">
+<meta name="description" content="来日不可待，去日不可追">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Android开发笔记">
+<meta property="og:url" content="http://yoursite.com/tags/RxJava2/index.html">
 <meta property="og:site_name" content="Android开发笔记">
-<meta property="og:description" content="需求是无穷无尽的！！！">
+<meta property="og:description" content="来日不可待，去日不可追">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-05-21T08:10:26.903Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Feature分支">
-<meta name="twitter:description" content="需求是无穷无尽的！！！">
+<meta name="twitter:title" content="Android开发笔记">
+<meta name="twitter:description" content="来日不可待，去日不可追">
 
 
 
@@ -120,13 +118,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/05/git笔记/Feature分支.html"/>
+  <link rel="canonical" href="http://yoursite.com/tags/RxJava2/"/>
 
 
 
 
 
-  <title>Feature分支 | Android开发笔记</title>
+  <title>标签: RxJava2 | Android开发笔记</title>
   
 
 
@@ -145,7 +143,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -279,185 +277,194 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
+  
+  
+  
+  <div class="post-block tag">
 
-  
+    <div id="posts" class="posts-collapse">
+      <div class="collection-title">
+        <h1>RxJava2<small>标签</small>
+        </h1>
+      </div>
 
-  
-  
-  
+      
+        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/git笔记/Feature分支.html">
+    <header class="post-header">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Android开发笔记">
-    </span>
-
-    
-      <header class="post-header">
-
+      <h2 class="post-title">
         
+            <a class="post-title-link" href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html" itemprop="url">
+              
+                <span itemprop="name">RxJava 2.x 使用详解(六) 变换操作符</span>
+              
+            </a>
         
-          <h1 class="post-title" itemprop="name headline">Feature分支</h1>
-        
+      </h2>
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-21T03:46:00+08:00">
-                2018-05-21
-              </time>
-            
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-06-20T04:37:00+08:00"
+              content="2018-06-20" >
+          06-20
+        </time>
+      </div>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/git/" itemprop="url" rel="index">
-                    <span itemprop="name">Git笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p><strong>需求是无穷无尽的！！！</strong></p>
-<a id="more"></a>
-<p>软件开发中，总有无穷无尽的新的功能要不断添加进来。</p>
-<p>添加一个新功能时，你肯定不希望因为实验性质的代码，把主分支搞乱了，所以，每添加一个新功能，最好新建一个feature分支，在上面开发，完成后，合并，最后，删除该 feature 分支。</p>
-<p>现在，你接到了一个新任务：添加视频需求。</p>
-<p>开发准备：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git branch -b feature-video</span><br><span class="line">Switched to a new branch &apos;feature-video&apos;</span><br></pre></td></tr></table></figure></p>
-<p>一段时间后，开发完毕：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ git add video.class</span><br><span class="line">$ git status</span><br><span class="line"># On branch feature-video</span><br><span class="line"># Changes to be committed:</span><br><span class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">#</span><br><span class="line">#       new file:   video.class</span><br><span class="line">#</span><br><span class="line">$ git commit -m &quot;add feature video&quot;</span><br><span class="line">[feature-video 756d4af] add feature video</span><br><span class="line"> 1 file changed, 2 insertions(+)</span><br><span class="line"> create mode 100644 video.py</span><br></pre></td></tr></table></figure></p>
-<p>切回 <code>dev</code> ，准备合并：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout dev</span><br></pre></td></tr></table></figure></p>
-<p>一切顺利的话，feature 分支和 bug 分支是类似的，合并，然后删除。<br>但是，就在此时，需求那边改了，新功能必须取消！！！<br>虽然白干了，但是这个分支还得必须销毁：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git branch -d feature-video</span><br><span class="line">error: The branch &apos;feature-video&apos; is not fully merged.</span><br><span class="line">If you are sure you want to delete it, run &apos;git branch -D feature-video&apos;.</span><br></pre></td></tr></table></figure></p>
-<p>销毁失败。Git 友情提示，<code>feature-video</code> 分支还没有被合并，如果删除，将丢失掉修改；如果强行删除，需要使用命令 <code>git branch -D  feature-video</code>。</p>
-<p>现在，我们强行删除：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git branch -D feature-video</span><br><span class="line">Deleted branch feature-video (was 756d4af).</span><br></pre></td></tr></table></figure></p>
-<p>终于删除成功了！</p>
-<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>开发一个新 feature，最好新建一个分支；<br>如果要丢弃一个没有被合并过的分支，可以通过 <code>git branch -D &lt;name&gt;</code> 强行删除</p>
-
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/Git/" rel="tag"># Git</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/05/git笔记/Bug分支.html" rel="next" title="Bug分支">
-                <i class="fa fa-chevron-left"></i> Bug分支
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/05/git笔记/多人协作.html" rel="prev" title="多人协作">
-                多人协作 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
+    </header>
   </article>
 
 
+      
+        
 
-    <div class="post-spread">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html" itemprop="url">
+              
+                <span itemprop="name">RxJava 2.x 使用详解(五) 条件操作符</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-06-19T04:37:00+08:00"
+              content="2018-06-19" >
+          06-19
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html" itemprop="url">
+              
+                <span itemprop="name">RxJava 2.x 使用详解(四) 合并聚合操作符</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-06-18T04:37:00+08:00"
+              content="2018-06-18" >
+          06-18
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/rxjava2.x/RxJava2.x 使用详解（三）过滤操作符.html" itemprop="url">
+              
+                <span itemprop="name">RxJava2.x 使用详解（三）过滤操作符</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-06-17T04:37:00+08:00"
+              content="2018-06-17" >
+          06-17
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/rxjava2.x/RxJava.2.x 使用详解（二）创建操作符.html" itemprop="url">
+              
+                <span itemprop="name">RxJava2.x 使用详解（二）创建操作符</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-06-16T04:37:00+08:00"
+              content="2018-06-16" >
+          06-16
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/rxjava2.x/RxJava2.x 快速入门.html" itemprop="url">
+              
+                <span itemprop="name">RxJava2.x 使用详解（一）快速入门</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-06-15T04:37:00+08:00"
+              content="2018-06-15" >
+          06-15
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
       
     </div>
+
   </div>
+  
+  
+  
+
+  
 
 
           </div>
@@ -465,10 +472,6 @@
 
 
           
-
-  
-
-
 
         </div>
         
@@ -489,17 +492,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -559,22 +553,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">1.</span> <span class="nav-text">小结</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -715,10 +693,6 @@
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
 
   
 
