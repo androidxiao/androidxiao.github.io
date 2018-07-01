@@ -292,1058 +292,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Android开发笔记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html" itemprop="url">RxJava 2.x 使用详解(六) 变换操作符</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-20T04:37:00+08:00">
-                2018-06-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本节介绍 RxJava 的变换操作符</p>
-<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>基本的转换操作符，可以<strong>把每一个元素转换成新的元素发射</strong>，接收一个 <code>Function&lt;T,R&gt;</code> 作为转换逻辑的操作，下面是例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .map(integer -&gt; &quot;int&quot; + integer)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述例子中 <code>map</code> 操作符返回了 <code>Flowable&lt;String&gt;</code>，最终输出的结果为：int1、int2、int3。</p>
-<h3 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h3><p>上面的 <code>Map</code> 操作符是<strong>把每一个元素转换成一个新的元素</strong>，但是 <code>flatMap</code> 操作符是<strong>把每一个元素转换成新的被观察者，每个被观察者发射的元素将会合并成新的被观察者，这些元素顺序输出</strong>，例如下面的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .flatMap((Function&lt;Integer, Publisher&lt;?&gt;&gt;)</span><br><span class="line">                integer -&gt; Flowable.just(&quot;a&quot;,integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码中把每一个 <code>just</code> 发射的元素转换成新的 <code>Flowable</code>，而每一个新的 <code>Flowable</code> 额外添加一个“a”元素，所以上述的例子输出结果是：a、1、a、2、a、3。</p>
-<h3 id="flatMapIterable"><a href="#flatMapIterable" class="headerlink" title="flatMapIterable"></a>flatMapIterable</h3><p><code>flatMapIterable</code> 与 <code>flatMap</code> 类似，但是 <code>flatMapIterable</code> 是<strong>把每一个元素转换成 <code>Iterable</code></strong>，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .flatMapIterable((Function&lt;Integer, Iterable&lt;?&gt;&gt;)</span><br><span class="line">                integer -&gt; Arrays.asList(&quot;a&quot;, integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码把每一个元素转换成一个 List，每个 list 以元素“a”开头，所以上述的例子输出结果是：a、1、a、2、a、3。</p>
-<h3 id="concatMap"><a href="#concatMap" class="headerlink" title="concatMap"></a>concatMap</h3><p><code>concatMap</code> 操作符 <code>合flatMap</code> 操作符类似，接收的参数和转换都是类似的，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .concatMap(integer -&gt; Flowable.just(&quot;a&quot;, integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述的例子输出结果是：a、1、a、2、a、3。<code>flatMap</code> 操作符内部是使用 <code>merge</code> 合并元素，<code>concatMap</code>操作符则是通过 <code>concat</code> 合并元素，前者<strong>可能会出现元素交错问题</strong>，后者<strong>严格按照顺序发射</strong>。另外 <code>concatMap</code> 也有类似的 <code>concatMapIterable</code> 操作符。</p>
-<h3 id="switchMap"><a href="#switchMap" class="headerlink" title="switchMap"></a>switchMap</h3><p><code>switchMap</code> 用法与 <code>flatMap</code> 类似，<strong>但是转换出来的每一个新的数据（被观察者）发射会取代掉前一个被观察者</strong>，如下例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .switchMap(integer -&gt;</span><br><span class="line">                Flowable.timer(1, TimeUnit.SECONDS)</span><br><span class="line">                        .map(longValue -&gt; integer)</span><br><span class="line">        )//延迟1s发送元素</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上面的例子最终只会输出 3 这个元素，其它元素被覆盖替代掉不再发送。</p>
-<h3 id="cast"><a href="#cast" class="headerlink" title="cast"></a>cast</h3><p><strong>强制转换每一个元素的类型，内部调用map操作符来进行转换</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .cast(Number.class)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码把每个元素都转换成 <code>Number</code> 类型，然后再发射。</p>
-<h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><p>扫描每一个元素，<strong>第一个元素将忽略，从第二个元素开始</strong>（可以获得上一个元素的值）进行变换后返回，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .scan((last, item) -&gt; &#123;</span><br><span class="line">            Log.i(&quot;tag&quot;, &quot;last:&quot; + String.valueOf(last));</span><br><span class="line">            Log.i(&quot;tag&quot;, &quot;item:&quot; + String.valueOf(item));</span><br><span class="line">            return item+1;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出结果为1、3、4。</p>
-<h3 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h3><p><code>buffer</code> 操作符是<strong>把多个元素打包成一个元素一次过发送数据</strong>，例如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .buffer(3)//三个元素打包成一个元素</span><br><span class="line">        .subscribe(intList -&gt; Log.i(&quot;tag&quot;, intList.toString()));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码把三个元素组合成一个List发送，输出结果为：[1, 2, 3]、[4, 5]。</p>
-<h3 id="toList"><a href="#toList" class="headerlink" title="toList"></a>toList</h3><p><strong>把所有元素转换成一个 <code>List</code> 一次过发送出去</strong>，如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .toList()</span><br><span class="line">        .subscribe(intList -&gt; Log.i(&quot;tag&quot;, intList.toString()));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出 [1, 2, 3, 4, 5]。除了 <code>toList</code> 操作符以外，还有 <code>toSortedList</code> 操作符，而且 <code>toSortedList</code> 操作符也<strong>支持自定义排序方式</strong>。</p>
-<h3 id="groupBy"><a href="#groupBy" class="headerlink" title="groupBy"></a>groupBy</h3><p><code>groupBy</code> 操作符通过 <code>Function</code> 接收每个数据的分组key，然后返回 <code>GroupedFlowable</code>，使用者可以再订阅这个被观察者进行数据输出，由于使用lambda表达式可能加大理解难度，这里给出普通写法的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .groupBy(new Function&lt;Integer, String&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public String apply(Integer integer) throws Exception &#123;</span><br><span class="line">                //这里的返回值是分组的key</span><br><span class="line">                return integer &gt; 2 ? &quot;A组&quot; : &quot;B组&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(new Consumer&lt;GroupedFlowable&lt;String, Integer&gt;&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(GroupedFlowable&lt;String, Integer&gt; groupedFlowable)</span><br><span class="line">                    throws Exception &#123;</span><br><span class="line">                //订阅转换成GroupedFlowable</span><br><span class="line">                groupedFlowable.subscribe(new Consumer&lt;Integer&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(Integer integer) throws Exception &#123;</span><br><span class="line">                        String key = groupedFlowable.getKey();</span><br><span class="line">                        Log.i(&quot;tag&quot;, key + &quot;:&quot; + String.valueOf(integer));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
-<p>上述代码将输出：“B组:1、B组:2、A组:3、A组:4、A组:5”，上述代码转换成lambda表达式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .groupBy(integer -&gt; integer &gt; 2 ? &quot;A组&quot; : &quot;B组&quot;)</span><br><span class="line">        .subscribe(groupedFlowable -&gt;</span><br><span class="line">                groupedFlowable.subscribe(</span><br><span class="line">                        integer -&gt; Log.i(&quot;tag&quot;, groupedFlowable.getKey()</span><br><span class="line">                                + &quot;:&quot; + String.valueOf(integer))</span><br><span class="line">                ));</span><br></pre></td></tr></table></figure></p>
-<h3 id="toMap"><a href="#toMap" class="headerlink" title="toMap"></a>toMap</h3><p>熟悉了 <code>groupBy</code> 后，<code>toMap</code> 也是类似的，<strong>可以通过自定义key、value转换成对应的map</strong>，如下例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .toMap(integer -&gt; &quot;key&quot; + integer)//第一个参数Function返回Map的key</span><br><span class="line">        .subscribe(map -&gt; Log.i(&quot;tag&quot;, map.toString()));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出：“{key5=5, key2=2, key4=4, key1=1, key3=3}”，另外 <code>toMap</code> 还可以支持自定义每个item对应的value值（传入第二个Function处理）。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Android开发笔记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html" itemprop="url">RxJava 2.x 使用详解(五) 条件操作符</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-19T04:37:00+08:00">
-                2018-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本节将会介绍<strong>条件操作符</strong>，用于控制<strong>被观察者开始、停止、跳过的各种条件操作符</strong>。</p>
-<h3 id="all"><a href="#all" class="headerlink" title="all"></a>all</h3><p><strong>要判断所有元素是否满足某个条件</strong>，可以使用 <code>all</code> 操作符，它接受一个 <code>Predicate</code>，其中的 <code>test</code> 方法<strong>用于判断某个元素是否满足条件，最终输出是否所有元素都满足条件</strong>，比如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .all(integer -&gt; integer &gt;= 0)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述例子是判断是否所有元素都大于等于0，<code>all</code> 操作符会把<strong>被观察者转换成 <code>Single&lt;Boolean&gt;</code> 类型的被观察者，最终输出结果为true</strong>。</p>
-<h3 id="ambArray"><a href="#ambArray" class="headerlink" title="ambArray"></a>ambArray</h3><p><code>ambArray</code> 操作符可以<strong>从多个被观察者中选择第一个发射元素的被观察者进行处理，其它被观察者则抛弃</strong>，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.ambArray(</span><br><span class="line">        Flowable.timer(1, TimeUnit.SECONDS),</span><br><span class="line">        Flowable.just(3, 4, 5))//仅处理第一个发射元素的被观察者</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码只会处理第二个被观察者，输出结果为3,4,5。</p>
-<h3 id="contains"><a href="#contains" class="headerlink" title="contains"></a>contains</h3><p>如果要<strong>判断被观察者是否包含某一个元素</strong>，可以使用 <code>contains</code> 操作符，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .contains(3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码判断被观察者发射元素中是否包含 “3”，<code>contains</code>操作符会把<strong>被观察者转换成Single<boolean>类型的被观察者,输出结果为true</boolean></strong>。</p>
-<h3 id="any"><a href="#any" class="headerlink" title="any"></a>any</h3><p>我们观察 <code>contains</code> 的源码会发现，实际上它调用的是 <code>any</code> 操作符，<code>any</code> 操作符<strong>可以判断是否存在某一个元素满足一定的条件，用法和all操作符类似</strong>，也是接受一个  <code>Predicate</code>，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .any(integer -&gt; integer == 3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述例子即寻找是否有元素 “3”，等价于 <code>contains(3)</code> ,<code>any</code> 操作符也是把<strong>被观察者转换成Single<boolean>类型的被观察者,输出结果为true</boolean></strong>。</p>
-<h3 id="isEmpty"><a href="#isEmpty" class="headerlink" title="isEmpty"></a>isEmpty</h3><p><strong>要判断一个被观察者是否发射过元素</strong>，可以使用 <code>isEmpty</code> 操作符，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .isEmpty()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出false，可以源码发现 <code>isEmpty</code> 实际上是调用了 <code>all</code> 操作符。</p>
-<h3 id="defaultIfEmpty"><a href="#defaultIfEmpty" class="headerlink" title="defaultIfEmpty"></a>defaultIfEmpty</h3><p><strong>如果你需要在被观察者不发送数据的时候需要发送一个默认的元素</strong>，可以使用 <code>defaultIfEmpty</code> 操作符，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .defaultIfEmpty(1)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p><strong>如果被观察者不发送任何数据，则会发送默认数据</strong>，上述代码中发送的是 “1”，故输出结果为“1”。</p>
-<h3 id="switchIfEmpty"><a href="#switchIfEmpty" class="headerlink" title="switchIfEmpty"></a>switchIfEmpty</h3><p><code>defaultIfEmpty</code> 操作符<strong>只能在被观察者不发送数据时发送一个默认的数据</strong>，如果需要<strong>发送更多数据，则可以使用 <code>switchIfEmpty</code> 操作符</strong>，发送自定义的被观察者作为替代，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .switchIfEmpty(Flowable.just(3, 4, 5))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码将会输出3,4,5。</p>
-<h3 id="sequenceEqual"><a href="#sequenceEqual" class="headerlink" title="sequenceEqual"></a>sequenceEqual</h3><p>如果要<strong>对比两个被观察者发射的元素队列</strong>，可以使用 <code>sequenceEqual</code> 操作符，它只关心<strong>两个发射队列的元素、元素发射顺序、和最终状态，而不关心他的时间</strong>，下面是一个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.sequenceEqual(</span><br><span class="line">        Flowable.just(0L, 1L, 2L),</span><br><span class="line">        Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述例子中输出是 true，<code>sequenceEqual</code> 操作符<strong>对于元素的类型也是十分敏感的</strong>，假设要自定义 <code>Integer</code> 和 <code>Long</code> 类型值相等则认为两个元素相等，可以添加额外的参数 <code>isEqual</code>，<strong>由于 <code>sequenceEqual</code> 操作符只能对比两个被观察者，所以使用 <code>BiPredicate</code> 作为判断类型</strong>，下面是例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.sequenceEqual(</span><br><span class="line">        Flowable.just(0, 1, 2),</span><br><span class="line">        Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS),</span><br><span class="line">        (num1, num2) -&gt; num1.longValue() == num2.longValue())</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码中两个类型均为 <code>Number</code> 类型，<strong>但如果不使用自定义的 <code>isEqual</code> 参数，则会返回 false，这里使用了判断两个数的 <code>Long</code> 值相等则相等，所以最后输出结果为true</strong>。</p>
-<h3 id="takeUntil"><a href="#takeUntil" class="headerlink" title="takeUntil"></a>takeUntil</h3><p><strong>如果想执行到某个条件就停止事件</strong>，可以使用 <code>takeUntil</code> 操作符，它接受一个 <code>Predicate</code> 来定义停止条件，其用法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1,2,3)</span><br><span class="line">        .takeUntil(integer -&gt; integer==2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码表明当元素 ==2 时则停止，所以输出结果为 1,2。<strong>这里值得注意的是，输出结果是包含该元素的</strong>。除此之外，<code>takeUntil</code> <strong>也可以接受另外一个被观察者，当这个被观察者结束之后则停止第一个被观察者</strong>,例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .takeUntil(Flowable.timer(1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码将会在 1 秒后停止 <code>interval</code> 生成的被观察者，所以输出结果只有 0,1,2,3,4,5,6,7,8。</p>
-<h3 id="takeWhile"><a href="#takeWhile" class="headerlink" title="takeWhile"></a>takeWhile</h3><p><code>takeWhile</code> 操作符和 <code>takeUntil</code> 操作符类似，但是 <code>takeWhile</code> 只接受 <code>Predicate</code>，而且 <code>Predicate</code> 中的test方法返回true才执行被观察者的事件，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .takeWhile(longItem -&gt; longItem != 5L)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出的结果为 0,1,2,3,4，<strong>注意是不包含 5 这个元素的</strong>。</p>
-<h3 id="skipUntil"><a href="#skipUntil" class="headerlink" title="skipUntil"></a>skipUntil</h3><p><code>skipUntil</code> 操作符<strong>接收一个被观察者，直到该被观察者发送事件之前，第一个被观察者所有发送的元素将被抛弃</strong>，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 0, 1, TimeUnit.SECONDS)</span><br><span class="line">        .skipUntil(Flowable.timer(3, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码中，表示 <code>intervalRange</code> 生成的<strong>被观察者前3秒的发送的元素都会被抛弃</strong>，所以最终输出结果为3,4,5,6,7,8,9。</p>
-<h3 id="skipWhile"><a href="#skipWhile" class="headerlink" title="skipWhile"></a>skipWhile</h3><p><code>skipWhile</code> 操作符可以接受一个 <code>Predicate</code> 用于<strong>控制跳过开始一段数据</strong>，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 5, 0, 100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .skipWhile(longItem -&gt; longItem &lt; 2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述例子中，少于 2 的元素将会被跳过，即输出 2,3,4，要注意的是，<strong>如果<code>.skipWhile(longItem -&gt; longItem &gt; 2)</code>是不会跳过任何发射元素的，因为 <code>skipWhile</code> 操作符只会过滤一开始的数据，不能跳过中间或者以后的数据</strong>。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Android开发笔记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html" itemprop="url">RxJava 2.x 使用详解(四) 合并聚合操作符</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-18T04:37:00+08:00">
-                2018-06-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本章讲解一下 RxJava 中<strong>合并操作符</strong>和<strong>聚合操作符</strong>，主要用于合并多个被观察者或者把一个观察者的多个元素聚合成一个元素。</p>
-<h3 id="startWith-startWithArray"><a href="#startWith-startWithArray" class="headerlink" title="startWith / startWithArray"></a>startWith / startWithArray</h3><p>如果你需要在<strong>被观察发送元素之前追加数据或者追加新的被观察者</strong>，这时候可以使用 <code>startWith</code> 操作符，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(4, 5, 6)</span><br><span class="line">        .startWith(Flowable.just(1, 2, 3))</span><br><span class="line">        .startWith(0)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出结果为 “0,1,2,3,4,5,6”,如果你需要<strong>追加多个元素</strong>，则需要使用另外一个操作符 <code>startWithArray</code>，一次追加多个元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(4, 5, 6)</span><br><span class="line">        .startWithArray(1, 2, 3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出结果为 “1,2,3,4,5,6”，实际上上述两个操作符从源码中观察，都可以发现它实际上使用的 <code>concat</code> 和 <code>concatArray</code> 操作符去实现的。下面我们来说明下这两个操作符。</p>
-<h3 id="concat-concatArray"><a href="#concat-concatArray" class="headerlink" title="concat / concatArray"></a>concat / concatArray</h3><p><code>concat</code> 操作符可以连接<strong>最多4个的被观察者</strong>，他们的顺序是<strong>串行执行</strong>的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.concat(</span><br><span class="line">        Flowable.just(1,2,3),</span><br><span class="line">        Flowable.just(4,5,6))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出结果为 “1,2,3,4,5,6”，如果<strong>需要多于 4 个被观察合并在一起</strong>，可以使用 <code>concatArray</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flowable.concatArray(Flowable.just(1), Flowable.just(2))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<h3 id="merge-mergeArray"><a href="#merge-mergeArray" class="headerlink" title="merge / mergeArray"></a>merge / mergeArray</h3><p>上面说到的 <code>concat</code> 操作符，对于<strong>每一个被观察者都是按照顺序串行执行的</strong>，接下来介绍的 <code>merge</code> 操作符也是合并多个被观察者，但他们合并后是<strong>按照时间线并行执行</strong>，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.merge(</span><br><span class="line">        Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS),</span><br><span class="line">        Flowable.intervalRange(3, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述例子中，两个被观察将并行执行，输出结果 “0,3-&gt;1,4-&gt;2,5”，可以直观的地观察到和 <code>concat</code> 操作符的区别。</p>
-<p>和 <code>concat</code> 操作符一样，<code>merge</code> 也是<strong>最多只能合并4个被观察者</strong>，可以使用 <code>mergeArray</code> 来合并多个被观察者，这里就不举例子了。</p>
-<h3 id="concatDelayError-mergeDelayError"><a href="#concatDelayError-mergeDelayError" class="headerlink" title="concatDelayError / mergeDelayError"></a>concatDelayError / mergeDelayError</h3><p>使用 <code>concat</code> 和 <code>merge</code> 操作符时，<strong>如果遇到其中一个被观察者发出 <code>onError</code> 事件则会马上终止其他被观察者的事件</strong>，如果希望 <code>onError</code> 事件<strong>推迟到其它被观察者都结束后才触发</strong>，可以使用对应的 <code>concatDelayError</code> 或者 <code>mergeDelayError</code> 操作符，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.mergeDelayError(</span><br><span class="line">        Flowable.create(s -&gt; s.onError(new NullPointerException()), BackpressureStrategy.ERROR),</span><br><span class="line">        Flowable.intervalRange(3, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p><code>concatArray</code> 和 <code>mergeArray</code> 也可以使用对应的操作符：<code>concatArrayDelayError</code> 和 <code>mergeArrayDelayError</code>，这里就不一一列举例子了。</p>
-<h3 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h3><p><strong>多个被观察者压缩成单个的操作可以使用 <code>zip</code> 操作符，如果多个被观察者数量不同，则以少的为基准</strong>，可以使用 <code>Funtions</code> 来自定义 <code>zip</code> 操作（zipper）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.zip(</span><br><span class="line">        Flowable.just(1, 2, 3),</span><br><span class="line">        Flowable.just(4, 5),</span><br><span class="line">        (int1, int2) -&gt; int1 + int2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码中输出的结果为 5、7。</p>
-<p>对于 <code>delayError</code> 的操作是通过参数传递进去的，在 <code>zipper</code> 参数之后。<strong><code>zip</code> 操作符最多接受 9 个被观察者</strong>，这里的 <code>zipper</code> 使用到的 <code>Functions</code> 按照被观察个数分别对应 <code>Function</code>、<code>BiFunction</code> 和 <code>Function3 - Function9</code>，其中的 <code>apply</code> 方法用于对应的操作。</p>
-<h3 id="combineLatest"><a href="#combineLatest" class="headerlink" title="combineLatest"></a>combineLatest</h3><p><code>combineLatest</code> 类似 <code>zip</code> 操作符，但它合并时机和 <code>zip</code> 不一样，<code>zip</code> 是<strong>一对一合并压缩</strong>，<code>combineLatest</code> 则是在<strong>同一个时间线上，合并最后的元素</strong>，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.combineLatest(</span><br><span class="line">        Flowable.just(1L, 2L, 3L),</span><br><span class="line">        Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS),</span><br><span class="line">        (long1, long2) -&gt; long1 + long2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述例子只会合并 3+0 、3+1 、3+2 ，即输出3、4、5这几个元素。对于第一个观察者中1、2元素被忽略了。</p>
-<h3 id="combineLatestDelayError"><a href="#combineLatestDelayError" class="headerlink" title="combineLatestDelayError"></a>combineLatestDelayError</h3><p><code>combineLatest</code> 要处理 <code>delayError</code> 问题，需要使用 <code>combineLatestDelayError</code> 操作符，这个操作符<strong>把 <code>combiner的Funtions</code> 用 <code>Object[]</code> 数组的 <code>Funtion</code> 来代替，而且是作为第一个参数</strong>，上述的 <code>combineLatest</code> 例子使用 <code>combineLatestDelayError</code> 可以改写成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.combineLatestDelayError(</span><br><span class="line">         objects -&gt; (Long) objects[0] + (Long) objects[1],</span><br><span class="line">         Flowable.just(1L, 2L, 3L),</span><br><span class="line">         Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">         .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<h3 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h3><p>下面我们来介绍<strong>聚合操作符，要把一个被观察者的所有元素都聚合成单一的元素</strong>，可以使用 <code>reduce</code> 操作符，比如把所有元素都加起来，代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .reduce((last, item) -&gt; &#123;</span><br><span class="line">            Log.i(&quot;tag&quot;, last + &quot;,&quot; + item);</span><br><span class="line">            return last + item;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>可以看到一开始，先执行 1+2，然后用 1+2 的结果和 3 相加，最后输出 6，<strong>相当于把三个元素聚合在一起</strong>。</p>
-<h3 id="count"><a href="#count" class="headerlink" title="count"></a>count</h3><p>如果要<strong>统计一个被观察者发送多少个元素</strong>可以使用 <code>count</code> 方法,其代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .count()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p><code>count</code> 操作符会把<strong>观察者转换成 <code>Single&lt;Long&gt;</code> 类型的被观察者</strong>，上述代码会输出3（即原被观察者发送的元素数量）。</p>
-<h3 id="collect"><a href="#collect" class="headerlink" title="collect"></a>collect</h3><p><code>collect</code> 和 <code>reduce</code> 操作相似，不过<strong>它是需要自己定义收集的容器和收集逻辑</strong>，下面举个例子，利用 ArrayList 收集发射的元素：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .collect(</span><br><span class="line">                new Callable&lt;ArrayList&lt;Integer&gt;&gt;() &#123;//创建收集容器</span><br><span class="line">                    @Override</span><br><span class="line">                    public ArrayList&lt;Integer&gt; call() throws Exception &#123;</span><br><span class="line">                        return new ArrayList&lt;&gt;();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, new BiConsumer&lt;ArrayList&lt;Integer&gt;, Integer&gt;() &#123;//收集操作</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(ArrayList&lt;Integer&gt; list, Integer integer)</span><br><span class="line">                            throws Exception &#123;//前者容器，后者数据</span><br><span class="line">                        list.add(integer);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br><span class="line"></span><br><span class="line">//lambda写法</span><br><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .collect(ArrayList::new, ArrayList::add)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述操作最终会输出 [1, 2, 3] 这个 ArrayList 元素，相当于收集了所有元素的结果。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/RxJava2.x 使用详解（三）过滤操作符.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Android开发笔记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/rxjava2.x/RxJava2.x 使用详解（三）过滤操作符.html" itemprop="url">RxJava2.x 使用详解（三）过滤操作符</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-17T04:37:00+08:00">
-                2018-06-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前面说到 RxJava <strong>创建操作符</strong>，这一节说说<strong>过滤操作符</strong>，记得上节说到 <code>interval</code> 操作符如果没有其它限制的话就会无限发送 <code>onNext</code> 事件，永远也不会调用 <code>onComplete</code> 事件，如果需要限制的话，可以使用一些<strong>过滤操作符</strong>进行限制。</p>
-<h3 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h3><p>先说一个基本的过滤操作符 <code>filter</code>，可以自己设定任意的规则来过滤数据，比如过滤大于等于 2 的元素：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1,2,3,4)</span><br><span class="line">        .filter(new Predicated&lt;Integer&gt;()&#123;</span><br><span class="line">          @Override</span><br><span class="line">          public boolean test(Integer integer) throws Exception&#123;</span><br><span class="line">              //过滤出 &gt;=2 的数据</span><br><span class="line">              return integer &gt;=2;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;,String.valueOf(integer));</span><br></pre></td></tr></table></figure></p>
-<p>上面的结果只会输出 2 和 3，因为 <code>boolean test(T t)</code> 方法返回 true 则表示元素有效，否则则为无效抛弃。</p>
-<h3 id="take"><a href="#take" class="headerlink" title="take"></a>take</h3><p>如果需要使用类似 request(long) 的方法来限制发射数据的数量，可以使用 <code>take</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(1,TimeUnit.SECONDS)</span><br><span class="line">        .take(5)//只发射 5 个元素</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;,String.valueOf(integer)));</span><br></pre></td></tr></table></figure></p>
-<p><code>take</code> 操作符可以采用<strong>时间过滤</strong>，例如过滤出 5 秒之内发送的数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(1,TimeUnit.SECONDS)</span><br><span class="line">        .take(5,TimeUnit.SECONDS)//5 秒之内的数据（这里输出 0,1,2,3）</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;,String.valueOf(integer)));</span><br></pre></td></tr></table></figure></p>
-<h3 id="takeLast"><a href="#takeLast" class="headerlink" title="takeLast"></a>takeLast</h3><p>如果要筛选出最后几个元素的话，可以使用 <code>takeLast</code> 操作符，比如选取最后 3 个元素:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1,2,3,4,5)</span><br><span class="line">        .takeLast(3)</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;,String.valueOf(integer)));</span><br></pre></td></tr></table></figure></p>
-<p>也可以通过<strong>时间来筛选</strong>，比如筛选出最后三秒的数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 1, 1, TimeUnit.SECONDS)</span><br><span class="line">        .takeLast(3, TimeUnit.SECONDS)//最后三秒发送的数据</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;, String.valueOf(integer)));</span><br></pre></td></tr></table></figure></p>
-<p>另外使用 <code>takeLast</code> 操作符筛选时间，可以<strong>增加delayError参数</strong>(不传默认为 false) <code>takeLast(3, TimeUnit.SECONDS, true)</code> 来延迟筛选过程中接收到的 error。</p>
-<p>使用 <code>takeLast</code> 要特别注意，首先元素数量是可数的，由于 <code>takeLast</code> 使用的是 <code>buffer</code>，所以过滤后的数据会一次性发送（而不是按照例如 <code>intervalRange</code> 设定的方式发送），当然这里可以指定 <code>takeLast</code> 使用的 <code>bufferSize</code>。</p>
-<h3 id="firstElement-lastElement"><a href="#firstElement-lastElement" class="headerlink" title="firstElement / lastElement"></a>firstElement / lastElement</h3><p>如果需要选取第一个元素(允许为空)，可以使用 <code>firstElement</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1,2,3)</span><br><span class="line">        .firstElement()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>同理，如果要选取最后一个元素(允许为空)，可以使用 <code>lastElement</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .lastElement()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<h3 id="first-last"><a href="#first-last" class="headerlink" title="first / last"></a>first / last</h3><p>如果要设置一个默认值（当被观察者不发射任何元素的时候）可以使用 <code>first</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()                        </span><br><span class="line">        .first(2)//这里的2是默认元素，非第二个元素                          </span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述的代码将会输入“2”这个元素。</p>
-<p>同理如果要设置 <code>lastElement</code> 为空时发送的元素默认值，可以使用 <code>last</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .last(3)//这里的3是默认发射元素，并非第三个元素</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述的代码将会输入“3”这个元素。</p>
-<h3 id="firstOrError-lastOrError"><a href="#firstOrError-lastOrError" class="headerlink" title="firstOrError / lastOrError"></a>firstOrError / lastOrError</h3><p>上述说到的 <code>firstElement</code> 操作符，如果为空元素的时候不会发生任何异常，如果你需要<strong>在空的时候抛出异常</strong>，可以使用 <code>firstOrError</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .firstOrError()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码将会抛出异常。</p>
-<p>上述说到的 <code>lastElement</code> 操作符也是遇到空元素也是不会发生任何的异常，如果你需要在空的时候抛出异常，可以使用 <code>lastOrError</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .lastOrError()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<h3 id="elementAt-elementAtOrError"><a href="#elementAt-elementAtOrError" class="headerlink" title="elementAt / elementAtOrError"></a>elementAt / elementAtOrError</h3><p>如果需要指定发射第几个元素（注意这里的参数为索引值），可以使用 <code>elementAt</code> 操作符（<strong>支持越界</strong>）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)</span><br><span class="line">        .elementAt(2)//指定索引为2的元素，如果不存在则直接完成</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>如果需要设置<strong>越界后发送的默认元素</strong>，可以添加额外默认值参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)</span><br><span class="line">        .elementAt(4,&quot;d&quot;)//指定索引为4的元素，如果不存在则发射“d”</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>如果希望越界后抛出异常，可以使用 <code>elementAtOrError</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)</span><br><span class="line">        .elementAtOrError(3)//指定索引值为3的元素，如果不存在则抛出异常</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<h3 id="ofType"><a href="#ofType" class="headerlink" title="ofType"></a>ofType</h3><p>假设你需要筛选特定类型的数据，可以采用 <code>ofType</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;a&quot;, 1, 3, &quot;b&quot;)</span><br><span class="line">        .ofType(Integer.class)</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;, String.valueOf(integer)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码只会输出 1、3，其他元素被抛弃。</p>
-<h3 id="skip-skipLast"><a href="#skip-skipLast" class="headerlink" title="skip / skipLast"></a>skip / skipLast</h3><p>如果<strong>需要跳过若干个元素</strong>，或者<strong>跳过一段时间</strong>，可以使用 <code>skip</code> 或者 <code>skipLast</code> 操作符。下面是跳过若干个元素的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)</span><br><span class="line">        .skip(1)</span><br><span class="line">        .skipLast(1)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>假设需要跳过一段时间，可以<strong>使用重载方法</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 1, 1, TimeUnit.SECONDS)</span><br><span class="line">        .skip(3, TimeUnit.SECONDS)</span><br><span class="line">        .skipLast(3, TimeUnit.SECONDS)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<h3 id="ignoreElements"><a href="#ignoreElements" class="headerlink" title="ignoreElements"></a>ignoreElements</h3><p>如果<strong>你不关心发送的元素</strong>，<strong>只关心 <code>onComplete</code>和 <code>onError</code> 事件</strong>，可以使用 <code>ignoreElements</code> 操作符，它会把当前<strong>被观察者</strong>转换成 <strong><code>Completable</code></strong> 类型的被观察者：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)</span><br><span class="line">        .ignoreElements()</span><br><span class="line">        .subscribe(() -&gt; Log.i(&quot;tag&quot;, &quot;complete&quot;));</span><br></pre></td></tr></table></figure></p>
-<h3 id="distinct-distinctUntilChanged"><a href="#distinct-distinctUntilChanged" class="headerlink" title="distinct / distinctUntilChanged"></a>distinct / distinctUntilChanged</h3><p>如果想<strong>过滤掉重复的元素</strong>，可以使用 <code>distinct</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;b&quot;, &quot;b&quot;, &quot;c&quot;)</span><br><span class="line">        .distinct()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码只会输出 a、b、c 三个元素。</p>
-<p>如果只需要过滤<strong>连续重复</strong>的元素，则可以使用 <code>distinctUntilChanged</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;b&quot;, &quot;b&quot;, &quot;c&quot;)</span><br><span class="line">        .distinctUntilChanged()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码会输出 a、b、c、b、c 这几个元素。</p>
-<h3 id="timeout"><a href="#timeout" class="headerlink" title="timeout"></a>timeout</h3><p>如果需要<strong>过滤超时</strong>操作，可以使用 <code>timeout</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 0, 2, TimeUnit.SECONDS)</span><br><span class="line">        .timeout(1, TimeUnit.SECONDS)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码输出 0 后超时，抛出异常。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 0, 2, TimeUnit.SECONDS)</span><br><span class="line">        .timeout(1, TimeUnit.SECONDS,  Flowable.just(-1L))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码先输出 0，然后超时，使用自定义的 <code>Flowable</code> 输出 -1。</p>
-<h3 id="throttleFirst"><a href="#throttleFirst" class="headerlink" title="throttleFirst"></a>throttleFirst</h3><p>如果你<strong>需要在一段时间内只响应第一次的操作</strong>，比如说一段时间内连续点击按钮只执行第一次的点击操作，<code>throttleFirst</code> 操作符就可以满足这个需求，使用例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 0, 1, TimeUnit.SECONDS)</span><br><span class="line">        .throttleFirst(1, TimeUnit.SECONDS)//每1秒中只处理第一个元素</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<h3 id="throttleLast-sample"><a href="#throttleLast-sample" class="headerlink" title="throttleLast / sample"></a>throttleLast / sample</h3><p>除了 <code>throttleFirst</code>，有对应的 <code>throttleLast</code> 操作符，它的功能和 <code>sample</code> 操作符相同，<strong>都是隔一段时间采集一个元素</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 0, 1, TimeUnit.SECONDS)</span><br><span class="line">        .throttleLast(2, TimeUnit.SECONDS)//每2秒中采集最后一个元素</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br><span class="line"></span><br><span class="line">//等价于</span><br><span class="line">Flowable.intervalRange(0, 10, 0, 1, TimeUnit.SECONDS)</span><br><span class="line">        .sample(2, TimeUnit.SECONDS)//每2秒中采集最后一个元素</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码只会输出1、3、5、7，之后会直接触发 <code>onComplete</code> 事件。</p>
-<h3 id="throttleWithTimeout-debounce"><a href="#throttleWithTimeout-debounce" class="headerlink" title="throttleWithTimeout / debounce"></a>throttleWithTimeout / debounce</h3><p>假设有<strong>一种即时显示搜索结果需求，要求一段时间用户不输入才响应请求搜索结果</strong>，这样的需求可以使用 <code>throttleWithTimeout</code> 操作符或者 <code>debounce</code> 操作符，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 0, 1, TimeUnit.SECONDS)</span><br><span class="line">        .throttleWithTimeout(2, TimeUnit.SECONDS)//2秒内有新数据则抛弃旧数据</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br><span class="line">        </span><br><span class="line">//等价于</span><br><span class="line">Flowable.intervalRange(0, 10, 0, 1, TimeUnit.SECONDS)</span><br><span class="line">        .debounce(2, TimeUnit.SECONDS)//2秒内有新数据则抛弃旧数据</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
-<p>上述例子中只会输出 9 这个元素，因为每当接收到一个元素的时候，会等待2秒，如果有新的元素发送，则抛弃旧的元素，使用新的元素，直到2秒过去或者没有新的数据（比如 onComplete）。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/RxJava.2.x 使用详解（二）创建操作符.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Android开发笔记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/rxjava2.x/RxJava.2.x 使用详解（二）创建操作符.html" itemprop="url">RxJava2.x 使用详解（二）创建操作符</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-16T04:37:00+08:00">
-                2018-06-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<h3 id="just"><a href="#just" class="headerlink" title="just"></a>just</h3><p>第一篇中说到的被观察者可以采用 <code>Flowable</code>、<code>Observable</code>、<code>Single</code>等等的 <code>create</code> 方法来实现，如果对于只是发送几个数据来说，这个过程未免十分复杂繁琐，可以使用 <code>just</code> 操作符来简化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(&quot;test1&quot;,&quot;test2&quot;)</span><br><span class="line">        .subscribe(str -&gt; Log.i(&quot;tag&quot;,str));</span><br></pre></td></tr></table></figure></p>
-<p>上述代码相当于顺序调用 <code>onNext(&quot;test1&quot;)</code> 和 <code>onNext(&quot;test2&quot;)</code>，然后调用 <code>onComplete</code> 方法。</p>
-<p>另外，还可以使用 <code>Observable</code>、<code>Single</code> 或者 <code>Maybe</code> 来调用这个操作符。对于 <code>Completable</code> 则不能使用（因为没有 <code>onNext</code> 事件），对于 <code>Flowable</code> 和 <code>Observable</code> 最多能接收 10 个参数，也就是发送 10 个数据，而 <code>Single</code> 和 <code>Maybe</code> 只能接收 1 个参数（只能发送一次 <code>onNext</code> 事件）。</p>
-<h3 id="fromArray"><a href="#fromArray" class="headerlink" title="fromArray"></a>fromArray</h3><p>只能说到的 <code>just</code> 操作符，最多只能接收 10 个参数。我们通过观察 <code>just</code> 操作符的源码可知，其实超过 2 个参数时，它会帮我们调用 <code>fromArray</code> 操作符，采用 <code>fromArray</code> 来接收任意长度的数据数组，代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flowable.from(1,2,3,4,5)</span><br><span class="line">        .subscribe(integer -&gt; Log.i(&quot;tag&quot;,String.valueOf(integer)));</span><br></pre></td></tr></table></figure></p>
-<p><code>fromArray</code> 可以直接传入一个数组，例如 <code>fromArray(new int[]{1,2,3})</code>，但不能传递一个 <code>list</code> 进去，这样它会直接把 <code>list</code> 当做一个数据元素发送。</p>
-<h3 id="empty"><a href="#empty" class="headerlink" title="empty"></a>empty</h3><p>上面说到，<code>fromArray</code> 可以接收任意长度的数据数组，假设数组元素数量为 0 会怎么样呢？查看 <code>fromArray</code> 源码可知，当数据长度为 0 时，会调用 <code>empty</code> 操作符。</p>
-<p><code>empty</code> 操作符不会发送任何数据，而是直接发送 <code>onComplete</code> 事件，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty().subscribe(</span><br><span class="line">    obj -&gt; Log.i(&quot;tag&quot;,&quot;next&quot; + obj.toString)),</span><br><span class="line">    e -&gt; Log.i(&quot;tag&quot;,&quot;error&quot;),</span><br><span class="line">    () -&gt; Log.i(&quot;tag&quot;,&quot;complete&quot;));</span><br></pre></td></tr></table></figure></p>
-<p>可以发现上面的例子只会打印 <code>complete</code>，其它回调并不会触发。</p>
-<h3 id="error"><a href="#error" class="headerlink" title="error"></a>error</h3><p>除了直接发送 <code>onComplete</code>，当然就有直接发送 <code>onError</code>，<code>error</code> 操作符就是调用直接发送 <code>onError</code> 事件给观察者：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.error(new RuntimeException(&quot;test&quot;)).subscribe(</span><br><span class="line">    obj -&gt; Log.i(&quot;tag&quot;,&quot;next&quot; + obj.toString()),</span><br><span class="line">    e -&gt; Log.i(&quot;tag&quot;,&quot;error&quot;),</span><br><span class="line">    () -&gt; Log.i(&quot;tag&quot;,&quot;complete&quot;));</span><br></pre></td></tr></table></figure></p>
-<p>上面的例子只会打印 <code>error</code>，其它回调并不会触发。</p>
-<h3 id="never"><a href="#never" class="headerlink" title="never"></a>never</h3><p>下面来介绍另外一个什么都不会发送的操作符 <code>never</code>，也不会触发观察者任何的回调：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.never().subscribe(</span><br><span class="line">    obj -&gt; Log.i(&quot;tag&quot;,&quot;next&quot; + obj.toString)),</span><br><span class="line">    e -&gt; Log.i(&quot;tag&quot;,&quot;error&quot;),</span><br><span class="line">    () -&gt; Log.i(&quot;tag&quot;,&quot;complete&quot;));</span><br></pre></td></tr></table></figure></p>
-<p>上面的例子将不会输出任何东西，这个操作符用于<strong>测试</strong>。</p>
-<h3 id="fromIterable"><a href="#fromIterable" class="headerlink" title="fromIterable"></a>fromIterable</h3><p>上面说到的 <code>fromArray</code> 并不能遍历 <code>list</code> 等集合，采用 <code>fromIterable</code> 可以遍历迭代数据集合：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">list.add(&quot;a&quot;);</span><br><span class="line">list.add(&quot;b&quot;);</span><br><span class="line">list.add(&quot;c&quot;);</span><br><span class="line"></span><br><span class="line">Flowable.fromIterable(list).subscribe(</span><br><span class="line">    s -&gt; Log.i(&quot;tag&quot;,s)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>可以看到结果是顺序输出列表中的元素，<code>fromIterable</code> 和 <code>fromArray</code> 除了输入数据不同，其它基本是相似的。</p>
-<h3 id="timer"><a href="#timer" class="headerlink" title="timer"></a>timer</h3><p>接下来说一下时间间隔操作符 <code>timer</code>，可以指定一段时间发送数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.timer(1,TimeUnit.SECONDS)</span><br><span class="line">        //这里的 x 是 long 类型</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br></pre></td></tr></table></figure></p>
-<p>上面的例子为延迟 1 秒后调用 <code>onNext(0)</code>，然后调用 <code>onComplete</code> 事件。其中 <code>timer</code> 操作符还有重载方法可以接收多个参数。</p>
-<h3 id="interval"><a href="#interval" class="headerlink" title="interval"></a>interval</h3><p>上面的 <code>timer</code> 操作符<strong>只能发送一次数据</strong>，对于要不断地发送数据，可以采用 <code>interval</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(2,1,TimeUnit.SECONDS)</span><br><span class="line">        //这里的 x 是 0,1,2,3...</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br></pre></td></tr></table></figure></p>
-<p>这里 <code>interval</code> 接收的第一个参数是第一次的延迟，如果忽略（重载方法）则和<strong>设定的间隔一样</strong>，也可以单独设置 <code>Scheduler</code>。<br>如果运行了上面的代码，会发现 <code>interval</code> 操作符会无限执行，永不停止，那么应该怎么停止呢？这里就需要过滤操作符 <code>take</code> 了，后面会介绍。</p>
-<h3 id="intervalRange"><a href="#intervalRange" class="headerlink" title="intervalRange"></a>intervalRange</h3><p>上面说到 <code>interval</code> 操作符是从 0 开始发送数据，如果我们需要指定发送范围，那么可以使用 <code>intervalRange</code> 操作符。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(1,10,2,1,TimeUnit.SECONDS)</span><br><span class="line">        //x 从 1-10，初始间隔 2 秒，之后间隔 1 秒 发送一次</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br></pre></td></tr></table></figure></p>
-<p>如果注释中的说明，当 x 从 1 开始发送到 10 后（注意参数 10 是发送 10 个数量的意思，类似于 request(10)的操作）调用 <code>onComplete</code> 方法，值得注意的是<strong>从最后一个元素发出到 <code>onComplete</code> 之间并不会有 <code>period</code> 长度的延迟</strong>。</p>
-<h3 id="range-rangeLong"><a href="#range-rangeLong" class="headerlink" title="range/rangeLong"></a>range/rangeLong</h3><p>如果你<strong>不需要延迟发送数据</strong>，但是需要确定一个数据的范围可以采用 <code>range</code> 或 <code>rangeLong</code>，后者的数据类型是 <code>long</code>，可以使用的范围更加广，其它完全是一样的，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//int 类型范围</span><br><span class="line">Flowable.range(0,5)</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br><span class="line"></span><br><span class="line">//long 类型范围</span><br><span class="line">Flowable.rangeLong(Integer.MAX_VALUE,5L)</span><br><span class="line">        .subscribe(x -&gt; Log.i(&quot;tag&quot;,String.valueOf(x)));</span><br></pre></td></tr></table></figure></p>
-<p>上面输出都是从第一个数开始直接输出到最后一个数（第二个参数也是数量，而不是尾数）然后调用 <code>onComplete</code> 事件，中间没有间隔延迟。</p>
-<h3 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h3><p>之前说过一个被观察者可以订阅多个观察者，如果需要每个<strong>观察者被订阅</strong>的时候都<strong>重新创建被观察者（一对一）</strong>，则可以使用 <code>defer</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Flowable&lt;String&gt; flowable = Flowable.defer(new Callable&lt;Publisher&lt;String&gt;&gt;()&#123;</span><br><span class="line">  @Override</span><br><span class="line">  public Publisher&lt;String&gt; call() throws Exception&#123;</span><br><span class="line">      return Flowable.just(&quot;1&quot;,&quot;2&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//订阅第一个观察者</span><br><span class="line">flowable.subscribe(str -&gt; Log.i(&quot;tag&quot;,str));</span><br><span class="line">//订阅第二个观察者</span><br><span class="line">flowable.subscribe(str -&gt; Log.i(&quot;tag&quot;,str));</span><br></pre></td></tr></table></figure></p>
-<p>上面会输出<strong>两次</strong>（1，2）而且是<strong>顺序输出</strong>，只有当<strong>第一个观察者执行完</strong>后才会<strong>去创建第二个被观察者</strong>然后订阅观察者，然后才开始（第二个被观察者）发送事件消息。</p>
-<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>本文主要介绍了 RxJava 中的常用创建操作符。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/rxjava2.x/RxJava2.x 快速入门.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Android开发笔记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/rxjava2.x/RxJava2.x 快速入门.html" itemprop="url">RxJava2.x 使用详解（一）快速入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-15T04:37:00+08:00">
-                2018-06-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava2笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>首先知道什么是 RxJava，Rx 是 ReactiveX 的缩写，而 ReactiveX 是 Reactive Extendsions 的缩写。RxJava 顾名思义即使 Java 上的异步和基于事件响应式编程库。</p>
-<p>RxJava 基于观察者模式，主要有四个部分：观察者、被观察者、订阅、事件。</p>
-<h3 id="Hello-RxJava"><a href="#Hello-RxJava" class="headerlink" title="Hello RxJava"></a>Hello RxJava</h3><p>首先需要一个观察者，可以通过创建 <code>FlowableSubscriber</code>，由于事件处理的数据类型不一样，<code>FlowableSubscriber</code> 需要一个泛型来说明这个数据类型，这里假设我们要处理 <code>String</code> 类型，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">//创建观察者</span><br><span class="line">FlowableSubscriber&lt;String&gt; subscriber = new FlowableSubscriber&lt;String&gt;()&#123;</span><br><span class="line"> </span><br><span class="line"> @Override</span><br><span class="line"> public void onSubscribe(Subscription s)&#123;</span><br><span class="line">     //订阅时候的操作</span><br><span class="line">     s.request(Long.MAX_VALUE);//请求多少事件，这里表示不限制</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> @Override</span><br><span class="line"> public void onNext(String s)&#123;</span><br><span class="line">     //onNext 事件处理</span><br><span class="line">     Log.i(&quot;tag&quot;,s);</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> @Override</span><br><span class="line"> public void onError(Throwable t)&#123;</span><br><span class="line">     //onError 事件处理</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> @Override</span><br><span class="line"> public void onComplete()&#123;</span><br><span class="line">     //onComplete 事件处理</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>可以看到观察者身上有 <code>onNext</code>、<code>onError</code>、<code>onComplete</code> 这几个事件，接下来我们需要一个被观察者。<code>RxJava</code> 中需要使用 <code>create()</code> 方法去创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//被观察者</span><br><span class="line">Flowable&lt;String&gt; flowable = Flowable.create(new FlowableOnSubscribe&lt;String&gt;()&#123;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(FlowableEmitter&lt;String&gt; e) throws Excetion&#123;</span><br><span class="line">        //订阅观察者时的操作</span><br><span class="line">        e.onNext(&quot;test1&quot;);</span><br><span class="line">        e.onNext(&quot;test2&quot;);</span><br><span class="line">        e.onComplete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,BackpressureStrategy.BUFFER);</span><br></pre></td></tr></table></figure></p>
-<p>这里先忽略 <code>BackpressureStrategy</code> 是什么东西，后面会说到，被观察者执行各种操作，最后需要通过 <code>subscribe()</code> 订阅观察者：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flowable.subscribe(subscriber);</span><br></pre></td></tr></table></figure></p>
-<p>值得注意的是 <strong>一个被观察者可以订阅多个观察者</strong>。然后尝试运行上述代码，发现 <code>LogCat</code> 顺序输出 <code>test1</code> 和 <code>test2</code>，可以知道 <code>onNext</code> 是顺序执行的，一个正常的事件队列情况应该如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">onNext -&gt; onNext ... -&gt; onComplete</span><br><span class="line">onNext -&gt; onNext ... -&gt; onError</span><br></pre></td></tr></table></figure></p>
-<h3 id="Actions"><a href="#Actions" class="headerlink" title="Actions"></a>Actions</h3><p>上面可以看到 <code>FlowableSubscriber</code> 中我们只关心 <code>onNext</code> 方法，其他方法如果我们不需要，那么可以用 <code>Consumer</code> 来作为观察者：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flowable.subscribe(new Consumer&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void accept(String s)&#123;</span><br><span class="line">        //相当于 onNext 事件处理</span><br><span class="line">        Log.i(&quot;Consumer&quot;,s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>当我们查看 <code>subscribe()</code> 的重载时候会发现，如果你关心有多少个重载方法，其中有一组用于简化观察者的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">subscribe(onNext) //即上面的例子</span><br><span class="line">subscribe(onNext,onError)</span><br><span class="line">subscribe(onNext,onError,onComplete)</span><br><span class="line">subscribe(onNext,onError,onComplete,onSubscribe)</span><br></pre></td></tr></table></figure></p>
-<p>这里给出一个完整参数的例子，其他重载方法参考即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">flowable.subscribe(</span><br><span class="line">    new Consumer&lt;String&gt;()&#123;//相当于 onNext</span><br><span class="line">        @Override</span><br><span class="line">        public void accept(String s) throws Exception&#123;</span><br><span class="line">            </span><br><span class="line">        &#125;,new Consumer&lt;Throwable&gt;()&#123;//相当于 onError</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(Throwable throwable) throws Exception&#123;</span><br><span class="line">                </span><br><span class="line">            &#125;,new Action()&#123;//相当于 onComplete，注意这里是 Action</span><br><span class="line">                @Override</span><br><span class="line">                public void run() throws Exception&#123;</span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,new Consumer&lt;Subscription&gt;()&#123;//相当于 onSubscribe</span><br><span class="line">                @Override</span><br><span class="line">                public void accept(Subscription subscription) throws Exception&#123;</span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    )</span><br></pre></td></tr></table></figure></p>
-<p>上面出现了一个 <code>Action</code>，那么这个 <code>Action</code> 和 <code>Consumer</code> 是什么关系呢？实际上，这两个都是 <code>Actions</code>：</p>
-<ul>
-<li><strong>Action</strong>:无参数类型</li>
-<li><strong>Consumer<t></t></strong>:单一参数类型</li>
-</ul>
-<p>可以看到 <code>onComplete</code> 方法在 <code>FlowableSubscriber</code> 中属于无参数方法，而其他属于单一参数方法，自然对应使用 <code>Action</code> 和 <code>Consumer</code>。这时候你可能会产生一个疑问，假如有 2 个参数呢？3 个参数呢？…这里就需要使用：</p>
-<ul>
-<li><strong>BiConsumer&lt;T1,T2&gt;</strong>：双参数类型</li>
-<li><strong>Consumer&lt;Object[]&gt;</strong>：多参数类型</li>
-</ul>
-<h3 id="Observable-和-Observer"><a href="#Observable-和-Observer" class="headerlink" title="Observable 和 Observer"></a>Observable 和 Observer</h3><p>被观察者除了 <code>Flowable</code> 以外还有 <code>Observable</code>，它的使用方法和 <code>Flowable</code> 大体相似，也是使用 <code>create()</code> 创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//被观察者</span><br><span class="line">Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception&#123;</span><br><span class="line">        //订阅观察者时的操作</span><br><span class="line">        e.onNext(&quot;test1&quot;);</span><br><span class="line">        e.onNext(&quot;test2&quot;);</span><br><span class="line">        e.onComplete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;//没有背压设置</span><br></pre></td></tr></table></figure></p>
-<p>由于 <code>Observable</code> 不支持订阅 <code>Subscriber</code> 观察者，需要使用 <code>Observer</code> 作为观察者，其实现方式和 <code>Subscriber</code> 大体相似：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//观察者</span><br><span class="line">Observer&lt;String&gt; observer = new Observer&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onSubscribe(Disposable d)&#123;</span><br><span class="line">        //订阅时候的操作，无需 request</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onNext(String s)&#123;</span><br><span class="line">        //onNext 事件处理</span><br><span class="line">        Log.i(&quot;observer&quot;,s);</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onError(Throwable e)&#123;</span><br><span class="line">        //onError 事件处理</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onComplete()&#123;</span><br><span class="line">        //onComplete 事件处理</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>订阅操作也是通过 <code>subscribe()</code> 来操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">observable.subscribe(observer);</span><br></pre></td></tr></table></figure></p>
-<p>也可以通过上文提到的 <code>Actions</code> 来简化观察者，其写法和 <code>Flowable</code> 的 <code>subscirbe</code> 方法是完全一样的。</p>
-<h3 id="Observable-和-Flowable"><a href="#Observable-和-Flowable" class="headerlink" title="Observable 和 Flowable"></a>Observable 和 Flowable</h3><p>下面我们观察下上面两个例子，发现 <code>Observable</code> 和 <code>Flowable</code> 其中前者不需要背压（BackPressure）参数和请求资源（request）操作，其他都是大体相似的，那么他们两个有什么区别呢？分别什么时候用呢？</p>
-<p>这两者区别十分明显，<code>Observable</code> 不支持背压，而 <code>Flowable</code> 支持背压。关键是什么时候用呢？</p>
-<p>官方建议：</p>
-<ul>
-<li>使用 <code>Observable</code> - 不超过 1000 个元素、随着时间流逝基本不会出现 OOM - GUI 事件或者 1000 Hz 频率一下的元素 - 平台不支持 Java Steam(Java8 新特性) - <code>Observable</code> 开销比 <code>Flowable</code> 低</li>
-<li>使用 <code>Flowable</code> - 超过 10k+ 的元素（可以知道上限）- 读取硬盘操作（可以指定读取多少行）- 通过 JDBC 读取数据库 - 网络（流）IO 操作</li>
-</ul>
-<h3 id="BackPressure（背压）"><a href="#BackPressure（背压）" class="headerlink" title="BackPressure（背压）"></a>BackPressure（背压）</h3><p>所谓背压就是<strong>生产者（被观察者）的生产者大于消费者（观察者）消费速度</strong>从而导致的问题。</p>
-<p>举一个简单点的例子，如果被观察者快速发送消息，但是观察者处理消息的速度很缓慢，如果没有特定的流（Flow）控制，就会导致大量消息积压占用系统资源，最终导致十分缓慢。</p>
-<p><code>Flowable</code> 创建的时候已经设置了 <code>BackpressureStrategy</code>，而且 <code>Subscriber</code> 使用了 <code>request</code> 来控制最大的流量。</p>
-<h3 id="Single-和-SingleObserver"><a href="#Single-和-SingleObserver" class="headerlink" title="Single 和 SingleObserver"></a>Single 和 SingleObserver</h3><p>如果你使用一个单一连续事件流，即只有一个 <code>onNext</code> 事件，接着就触发 <code>onComplete</code> 或者 <code>onError</code>，这样你可以使用 <code>Single</code>。</p>
-<p><code>Single</code> 只包含两个事件，一个是正常处理成功的 <code>onSuccess</code>，另一个是处理失败的 <code>onError</code>，它只发送一次消息（当然就不存在背压问题），其中 <code>Single</code> 类似于 <code>Observable</code>，其代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">//被观察者</span><br><span class="line">Single&lt;String&gt; single = Single.create(new SingleOnSubscribe&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(SingleEmitter&lt;String&gt; e) throws Exception&#123;</span><br><span class="line">        e.onSuccess(&quot;test&quot;);</span><br><span class="line">        e.onSuccess(&quot;test2&quot;);//错误写法，重复调用也不会处理</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//订阅观察者 SingleObserver</span><br><span class="line">single.subscribe(new SingleObserver&lt;String&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onSubscribe(Disposable d)&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onSuccess(String s)&#123;</span><br><span class="line">        //相当于 onNext 和 onComplete</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onError(Throwable e)&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><code>Single</code> 也可以使用 <code>Actions</code> 来简化 <code>Observer</code>，还记得 <code>BiConsumer</code> 这个双参数的 <code>Actions</code> 吗，正可以用 <code>Single</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//订阅观察者 BiConsumer</span><br><span class="line">single.subscribe(new BiConsumer&lt;String,Throwable&gt;()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void accept(String s,Throwable throwable) throws Exception&#123;</span><br><span class="line">        //onSuccess 和 onError 操作都在这里处理</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>当然也有单一 <code>Actions</code> 的模式</p>
-<ul>
-<li>single.subscribe(onSuccess)</li>
-<li>single.subscribe(onSucess,onError)</li>
-</ul>
-<p>另外 <code>Single</code> 也可以直接转换成 <code>Flowable</code> 或 <code>Observable</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">single.toFlowable();</span><br><span class="line">single.toObservable();</span><br></pre></td></tr></table></figure></p>
-<h3 id="Completable-和-CompletableObserver"><a href="#Completable-和-CompletableObserver" class="headerlink" title="Completable 和 CompletableObserver"></a>Completable 和 CompletableObserver</h3><p>如果你的观察者连 <code>onNext</code> 事件都不关心，你可以使用 <code>Completable</code>，它只有 <code>onComplete</code> 和 <code>onError</code> 两个事件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Completable.create(new CompletableOnSubscribe()&#123;//被观察者</span><br><span class="line">    @Override</span><br><span class="line">    public void subscribe(CompletableEmitter e) throws Exception&#123;</span><br><span class="line">        e.onComplete();//单一 onComplete 或 onError</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).subscribe(new CompletableObserver()&#123;//观察者</span><br><span class="line">    @Override</span><br><span class="line">    public void onSubscribe(Disposable d)&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onComplete()&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onError(Throwable e)&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>同样也可以使用 <code>Actions</code> 来简化 <code>Observer</code>：</p>
-<ul>
-<li>completable.subscribe(onComplete)</li>
-<li>completable.subscribe(onComplete,onError)</li>
-</ul>
-<p>要转换成其它类型的被观察者，也是可以使用 <code>toFlowable()</code>、<code>toObservable()</code>等方法去转换。</p>
-<h3 id="Maybe-和-MaybeObserver"><a href="#Maybe-和-MaybeObserver" class="headerlink" title="Maybe 和 MaybeObserver"></a>Maybe 和 MaybeObserver</h3><p>如果你有一个需求是可能发送一个数据或者不会发送任何数据，这时候你就需要 <code>Maybe</code>，它类似于 <code>Single</code> 和 <code>Completable</code> 的混合体。</p>
-<p><code>Maybe</code> 可能会调用以下其中一种情况（也就是所谓的 <code>Maybe</code>）:</p>
-<ul>
-<li><code>onSuccess</code> 或者 <code>onError</code></li>
-<li><code>onCompletable</code> 或者 <code>onError</code></li>
-</ul>
-<p>可以看到 <code>onSuccess</code> 和 <code>onComplete</code> 是互斥的存在，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">//被观察者</span><br><span class="line">Maybe&lt;String&gt; maybe = Maybe.create(new MaybeOnSubscribe&lt;String&gt;()&#123;</span><br><span class="line">   @Override</span><br><span class="line">   public void subscribe(MaybeEmitter&lt;String&gt; e) throws Exception&#123;</span><br><span class="line">       e.onSuccess(&quot;test&quot;);</span><br><span class="line">       //发送一个数据的情况，或者 onError,不需要再调用 onComplete （调用了也不会触发 onComplete 回调方法）</span><br><span class="line">       //e.onComplete();//不需要发送数据的情况，或者 OnError</span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//订阅观察者</span><br><span class="line">maybe.subscribe(new MaybeObserver&lt;String&gt;()&#123;</span><br><span class="line">   @Override</span><br><span class="line">   public void onSubscribe(Disposable d)&#123;</span><br><span class="line">       </span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   public void onSuccess(String s)&#123;</span><br><span class="line">       //发送一个数据时，相当于 onNext 和 onComplete，但不会触发另一个方法 onComplete、</span><br><span class="line">       Log.i(&quot;tag&quot;,s);</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   public void onComplete()&#123;</span><br><span class="line">       //无数据发送的时候的 onComplete 事件</span><br><span class="line">       Log.i(&quot;tag&quot;,&quot;onComplete&quot;);</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   public void onError(Throwable e)&#123;</span><br><span class="line">       </span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>同样可以是用 <code>Actions</code> 来简化 <code>Observer</code></p>
-<ul>
-<li>maybe.subscribe(onSuccess)</li>
-<li>maybe.subscribe(onSuccess,onError)</li>
-<li>maybe.subscribe(onSuccess,onError,onComplete)</li>
-</ul>
-<p>要转换成其它类型的被观察者，也是可以使用 <code>toFlowable()</code>、<code>toObservable()</code>等方法去转换。</p>
-<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>本章描述了 RxJava 的观察者和被观察者，利用 <code>Actions</code> 来简化观察者，各种观察者的区别和转换。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/work/work-notes-2018-05-21.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1910,6 +858,943 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/git笔记/Feature分支.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/git笔记/Feature分支.html" itemprop="url">Feature分支</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-21T03:46:00+08:00">
+                2018-05-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><strong>需求是无穷无尽的！！！</strong></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/git笔记/Feature分支.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/git笔记/Bug分支.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/git笔记/Bug分支.html" itemprop="url">Bug分支</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-21T03:20:00+08:00">
+                2018-05-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><strong>软件开发难免会有Bug！！！</strong></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/git笔记/Bug分支.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/git笔记/版本回退.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/git笔记/版本回退.html" itemprop="url">版本回退</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-21T02:22:00+08:00">
+                2018-05-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><strong>Git如何进行版本回退？</strong></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/git笔记/版本回退.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/rxjava2.x/ RxJava 2.x 使用详解(六) 变换操作符.html" itemprop="url">RxJava 2.x 使用详解(六) 变换操作符</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-20T00:00:00+08:00">
+                2017-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本节介绍 RxJava 的变换操作符</p>
+<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>基本的转换操作符，可以<strong>把每一个元素转换成新的元素发射</strong>，接收一个 <code>Function&lt;T,R&gt;</code> 作为转换逻辑的操作，下面是例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .map(integer -&gt; &quot;int&quot; + integer)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子中 <code>map</code> 操作符返回了 <code>Flowable&lt;String&gt;</code>，最终输出的结果为：int1、int2、int3。</p>
+<h3 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h3><p>上面的 <code>Map</code> 操作符是<strong>把每一个元素转换成一个新的元素</strong>，但是 <code>flatMap</code> 操作符是<strong>把每一个元素转换成新的被观察者，每个被观察者发射的元素将会合并成新的被观察者，这些元素顺序输出</strong>，例如下面的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .flatMap((Function&lt;Integer, Publisher&lt;?&gt;&gt;)</span><br><span class="line">                integer -&gt; Flowable.just(&quot;a&quot;,integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中把每一个 <code>just</code> 发射的元素转换成新的 <code>Flowable</code>，而每一个新的 <code>Flowable</code> 额外添加一个“a”元素，所以上述的例子输出结果是：a、1、a、2、a、3。</p>
+<h3 id="flatMapIterable"><a href="#flatMapIterable" class="headerlink" title="flatMapIterable"></a>flatMapIterable</h3><p><code>flatMapIterable</code> 与 <code>flatMap</code> 类似，但是 <code>flatMapIterable</code> 是<strong>把每一个元素转换成 <code>Iterable</code></strong>，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .flatMapIterable((Function&lt;Integer, Iterable&lt;?&gt;&gt;)</span><br><span class="line">                integer -&gt; Arrays.asList(&quot;a&quot;, integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码把每一个元素转换成一个 List，每个 list 以元素“a”开头，所以上述的例子输出结果是：a、1、a、2、a、3。</p>
+<h3 id="concatMap"><a href="#concatMap" class="headerlink" title="concatMap"></a>concatMap</h3><p><code>concatMap</code> 操作符 <code>合flatMap</code> 操作符类似，接收的参数和转换都是类似的，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .concatMap(integer -&gt; Flowable.just(&quot;a&quot;, integer))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述的例子输出结果是：a、1、a、2、a、3。<code>flatMap</code> 操作符内部是使用 <code>merge</code> 合并元素，<code>concatMap</code>操作符则是通过 <code>concat</code> 合并元素，前者<strong>可能会出现元素交错问题</strong>，后者<strong>严格按照顺序发射</strong>。另外 <code>concatMap</code> 也有类似的 <code>concatMapIterable</code> 操作符。</p>
+<h3 id="switchMap"><a href="#switchMap" class="headerlink" title="switchMap"></a>switchMap</h3><p><code>switchMap</code> 用法与 <code>flatMap</code> 类似，<strong>但是转换出来的每一个新的数据（被观察者）发射会取代掉前一个被观察者</strong>，如下例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .switchMap(integer -&gt;</span><br><span class="line">                Flowable.timer(1, TimeUnit.SECONDS)</span><br><span class="line">                        .map(longValue -&gt; integer)</span><br><span class="line">        )//延迟1s发送元素</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子最终只会输出 3 这个元素，其它元素被覆盖替代掉不再发送。</p>
+<h3 id="cast"><a href="#cast" class="headerlink" title="cast"></a>cast</h3><p><strong>强制转换每一个元素的类型，内部调用map操作符来进行转换</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .cast(Number.class)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码把每个元素都转换成 <code>Number</code> 类型，然后再发射。</p>
+<h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><p>扫描每一个元素，<strong>第一个元素将忽略，从第二个元素开始</strong>（可以获得上一个元素的值）进行变换后返回，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .scan((last, item) -&gt; &#123;</span><br><span class="line">            Log.i(&quot;tag&quot;, &quot;last:&quot; + String.valueOf(last));</span><br><span class="line">            Log.i(&quot;tag&quot;, &quot;item:&quot; + String.valueOf(item));</span><br><span class="line">            return item+1;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出结果为1、3、4。</p>
+<h3 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h3><p><code>buffer</code> 操作符是<strong>把多个元素打包成一个元素一次过发送数据</strong>，例如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .buffer(3)//三个元素打包成一个元素</span><br><span class="line">        .subscribe(intList -&gt; Log.i(&quot;tag&quot;, intList.toString()));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码把三个元素组合成一个List发送，输出结果为：[1, 2, 3]、[4, 5]。</p>
+<h3 id="toList"><a href="#toList" class="headerlink" title="toList"></a>toList</h3><p><strong>把所有元素转换成一个 <code>List</code> 一次过发送出去</strong>，如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .toList()</span><br><span class="line">        .subscribe(intList -&gt; Log.i(&quot;tag&quot;, intList.toString()));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出 [1, 2, 3, 4, 5]。除了 <code>toList</code> 操作符以外，还有 <code>toSortedList</code> 操作符，而且 <code>toSortedList</code> 操作符也<strong>支持自定义排序方式</strong>。</p>
+<h3 id="groupBy"><a href="#groupBy" class="headerlink" title="groupBy"></a>groupBy</h3><p><code>groupBy</code> 操作符通过 <code>Function</code> 接收每个数据的分组key，然后返回 <code>GroupedFlowable</code>，使用者可以再订阅这个被观察者进行数据输出，由于使用lambda表达式可能加大理解难度，这里给出普通写法的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .groupBy(new Function&lt;Integer, String&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public String apply(Integer integer) throws Exception &#123;</span><br><span class="line">                //这里的返回值是分组的key</span><br><span class="line">                return integer &gt; 2 ? &quot;A组&quot; : &quot;B组&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(new Consumer&lt;GroupedFlowable&lt;String, Integer&gt;&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(GroupedFlowable&lt;String, Integer&gt; groupedFlowable)</span><br><span class="line">                    throws Exception &#123;</span><br><span class="line">                //订阅转换成GroupedFlowable</span><br><span class="line">                groupedFlowable.subscribe(new Consumer&lt;Integer&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(Integer integer) throws Exception &#123;</span><br><span class="line">                        String key = groupedFlowable.getKey();</span><br><span class="line">                        Log.i(&quot;tag&quot;, key + &quot;:&quot; + String.valueOf(integer));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上述代码将输出：“B组:1、B组:2、A组:3、A组:4、A组:5”，上述代码转换成lambda表达式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .groupBy(integer -&gt; integer &gt; 2 ? &quot;A组&quot; : &quot;B组&quot;)</span><br><span class="line">        .subscribe(groupedFlowable -&gt;</span><br><span class="line">                groupedFlowable.subscribe(</span><br><span class="line">                        integer -&gt; Log.i(&quot;tag&quot;, groupedFlowable.getKey()</span><br><span class="line">                                + &quot;:&quot; + String.valueOf(integer))</span><br><span class="line">                ));</span><br></pre></td></tr></table></figure></p>
+<h3 id="toMap"><a href="#toMap" class="headerlink" title="toMap"></a>toMap</h3><p>熟悉了 <code>groupBy</code> 后，<code>toMap</code> 也是类似的，<strong>可以通过自定义key、value转换成对应的map</strong>，如下例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3, 4, 5)</span><br><span class="line">        .toMap(integer -&gt; &quot;key&quot; + integer)//第一个参数Function返回Map的key</span><br><span class="line">        .subscribe(map -&gt; Log.i(&quot;tag&quot;, map.toString()));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出：“{key5=5, key2=2, key4=4, key1=1, key3=3}”，另外 <code>toMap</code> 还可以支持自定义每个item对应的value值（传入第二个Function处理）。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/rxjava2.x/ RxJava 2.x 使用详解(五) 条件操作符.html" itemprop="url">RxJava 2.x 使用详解(五) 条件操作符</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-19T00:00:00+08:00">
+                2017-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本节将会介绍<strong>条件操作符</strong>，用于控制<strong>被观察者开始、停止、跳过的各种条件操作符</strong>。</p>
+<h3 id="all"><a href="#all" class="headerlink" title="all"></a>all</h3><p><strong>要判断所有元素是否满足某个条件</strong>，可以使用 <code>all</code> 操作符，它接受一个 <code>Predicate</code>，其中的 <code>test</code> 方法<strong>用于判断某个元素是否满足条件，最终输出是否所有元素都满足条件</strong>，比如下面例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .all(integer -&gt; integer &gt;= 0)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子是判断是否所有元素都大于等于0，<code>all</code> 操作符会把<strong>被观察者转换成 <code>Single&lt;Boolean&gt;</code> 类型的被观察者，最终输出结果为true</strong>。</p>
+<h3 id="ambArray"><a href="#ambArray" class="headerlink" title="ambArray"></a>ambArray</h3><p><code>ambArray</code> 操作符可以<strong>从多个被观察者中选择第一个发射元素的被观察者进行处理，其它被观察者则抛弃</strong>，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.ambArray(</span><br><span class="line">        Flowable.timer(1, TimeUnit.SECONDS),</span><br><span class="line">        Flowable.just(3, 4, 5))//仅处理第一个发射元素的被观察者</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码只会处理第二个被观察者，输出结果为3,4,5。</p>
+<h3 id="contains"><a href="#contains" class="headerlink" title="contains"></a>contains</h3><p>如果要<strong>判断被观察者是否包含某一个元素</strong>，可以使用 <code>contains</code> 操作符，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .contains(3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码判断被观察者发射元素中是否包含 “3”，<code>contains</code>操作符会把<strong>被观察者转换成Single<boolean>类型的被观察者,输出结果为true</boolean></strong>。</p>
+<h3 id="any"><a href="#any" class="headerlink" title="any"></a>any</h3><p>我们观察 <code>contains</code> 的源码会发现，实际上它调用的是 <code>any</code> 操作符，<code>any</code> 操作符<strong>可以判断是否存在某一个元素满足一定的条件，用法和all操作符类似</strong>，也是接受一个  <code>Predicate</code>，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .any(integer -&gt; integer == 3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子即寻找是否有元素 “3”，等价于 <code>contains(3)</code> ,<code>any</code> 操作符也是把<strong>被观察者转换成Single<boolean>类型的被观察者,输出结果为true</boolean></strong>。</p>
+<h3 id="isEmpty"><a href="#isEmpty" class="headerlink" title="isEmpty"></a>isEmpty</h3><p><strong>要判断一个被观察者是否发射过元素</strong>，可以使用 <code>isEmpty</code> 操作符，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(3, 4, 5)</span><br><span class="line">        .isEmpty()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出false，可以源码发现 <code>isEmpty</code> 实际上是调用了 <code>all</code> 操作符。</p>
+<h3 id="defaultIfEmpty"><a href="#defaultIfEmpty" class="headerlink" title="defaultIfEmpty"></a>defaultIfEmpty</h3><p><strong>如果你需要在被观察者不发送数据的时候需要发送一个默认的元素</strong>，可以使用 <code>defaultIfEmpty</code> 操作符，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .defaultIfEmpty(1)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p><strong>如果被观察者不发送任何数据，则会发送默认数据</strong>，上述代码中发送的是 “1”，故输出结果为“1”。</p>
+<h3 id="switchIfEmpty"><a href="#switchIfEmpty" class="headerlink" title="switchIfEmpty"></a>switchIfEmpty</h3><p><code>defaultIfEmpty</code> 操作符<strong>只能在被观察者不发送数据时发送一个默认的数据</strong>，如果需要<strong>发送更多数据，则可以使用 <code>switchIfEmpty</code> 操作符</strong>，发送自定义的被观察者作为替代，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.empty()</span><br><span class="line">        .switchIfEmpty(Flowable.just(3, 4, 5))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码将会输出3,4,5。</p>
+<h3 id="sequenceEqual"><a href="#sequenceEqual" class="headerlink" title="sequenceEqual"></a>sequenceEqual</h3><p>如果要<strong>对比两个被观察者发射的元素队列</strong>，可以使用 <code>sequenceEqual</code> 操作符，它只关心<strong>两个发射队列的元素、元素发射顺序、和最终状态，而不关心他的时间</strong>，下面是一个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.sequenceEqual(</span><br><span class="line">        Flowable.just(0L, 1L, 2L),</span><br><span class="line">        Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子中输出是 true，<code>sequenceEqual</code> 操作符<strong>对于元素的类型也是十分敏感的</strong>，假设要自定义 <code>Integer</code> 和 <code>Long</code> 类型值相等则认为两个元素相等，可以添加额外的参数 <code>isEqual</code>，<strong>由于 <code>sequenceEqual</code> 操作符只能对比两个被观察者，所以使用 <code>BiPredicate</code> 作为判断类型</strong>，下面是例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.sequenceEqual(</span><br><span class="line">        Flowable.just(0, 1, 2),</span><br><span class="line">        Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS),</span><br><span class="line">        (num1, num2) -&gt; num1.longValue() == num2.longValue())</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中两个类型均为 <code>Number</code> 类型，<strong>但如果不使用自定义的 <code>isEqual</code> 参数，则会返回 false，这里使用了判断两个数的 <code>Long</code> 值相等则相等，所以最后输出结果为true</strong>。</p>
+<h3 id="takeUntil"><a href="#takeUntil" class="headerlink" title="takeUntil"></a>takeUntil</h3><p><strong>如果想执行到某个条件就停止事件</strong>，可以使用 <code>takeUntil</code> 操作符，它接受一个 <code>Predicate</code> 来定义停止条件，其用法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1,2,3)</span><br><span class="line">        .takeUntil(integer -&gt; integer==2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码表明当元素 ==2 时则停止，所以输出结果为 1,2。<strong>这里值得注意的是，输出结果是包含该元素的</strong>。除此之外，<code>takeUntil</code> <strong>也可以接受另外一个被观察者，当这个被观察者结束之后则停止第一个被观察者</strong>,例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .takeUntil(Flowable.timer(1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码将会在 1 秒后停止 <code>interval</code> 生成的被观察者，所以输出结果只有 0,1,2,3,4,5,6,7,8。</p>
+<h3 id="takeWhile"><a href="#takeWhile" class="headerlink" title="takeWhile"></a>takeWhile</h3><p><code>takeWhile</code> 操作符和 <code>takeUntil</code> 操作符类似，但是 <code>takeWhile</code> 只接受 <code>Predicate</code>，而且 <code>Predicate</code> 中的test方法返回true才执行被观察者的事件，其例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.interval(100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .takeWhile(longItem -&gt; longItem != 5L)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出的结果为 0,1,2,3,4，<strong>注意是不包含 5 这个元素的</strong>。</p>
+<h3 id="skipUntil"><a href="#skipUntil" class="headerlink" title="skipUntil"></a>skipUntil</h3><p><code>skipUntil</code> 操作符<strong>接收一个被观察者，直到该被观察者发送事件之前，第一个被观察者所有发送的元素将被抛弃</strong>，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 10, 0, 1, TimeUnit.SECONDS)</span><br><span class="line">        .skipUntil(Flowable.timer(3, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中，表示 <code>intervalRange</code> 生成的<strong>被观察者前3秒的发送的元素都会被抛弃</strong>，所以最终输出结果为3,4,5,6,7,8,9。</p>
+<h3 id="skipWhile"><a href="#skipWhile" class="headerlink" title="skipWhile"></a>skipWhile</h3><p><code>skipWhile</code> 操作符可以接受一个 <code>Predicate</code> 用于<strong>控制跳过开始一段数据</strong>，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.intervalRange(0, 5, 0, 100, TimeUnit.MILLISECONDS)</span><br><span class="line">        .skipWhile(longItem -&gt; longItem &lt; 2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子中，少于 2 的元素将会被跳过，即输出 2,3,4，要注意的是，<strong>如果<code>.skipWhile(longItem -&gt; longItem &gt; 2)</code>是不会跳过任何发射元素的，因为 <code>skipWhile</code> 操作符只会过滤一开始的数据，不能跳过中间或者以后的数据</strong>。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Android开发笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/rxjava2.x/ RxJava 2.x 使用详解(四) 合并聚合操作符.html" itemprop="url">RxJava 2.x 使用详解(四) 合并聚合操作符</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-18T00:00:00+08:00">
+                2017-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/rxjava2/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava2笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本章讲解一下 RxJava 中<strong>合并操作符</strong>和<strong>聚合操作符</strong>，主要用于合并多个被观察者或者把一个观察者的多个元素聚合成一个元素。</p>
+<h3 id="startWith-startWithArray"><a href="#startWith-startWithArray" class="headerlink" title="startWith / startWithArray"></a>startWith / startWithArray</h3><p>如果你需要在<strong>被观察发送元素之前追加数据或者追加新的被观察者</strong>，这时候可以使用 <code>startWith</code> 操作符，例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(4, 5, 6)</span><br><span class="line">        .startWith(Flowable.just(1, 2, 3))</span><br><span class="line">        .startWith(0)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出结果为 “0,1,2,3,4,5,6”,如果你需要<strong>追加多个元素</strong>，则需要使用另外一个操作符 <code>startWithArray</code>，一次追加多个元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(4, 5, 6)</span><br><span class="line">        .startWithArray(1, 2, 3)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出结果为 “1,2,3,4,5,6”，实际上上述两个操作符从源码中观察，都可以发现它实际上使用的 <code>concat</code> 和 <code>concatArray</code> 操作符去实现的。下面我们来说明下这两个操作符。</p>
+<h3 id="concat-concatArray"><a href="#concat-concatArray" class="headerlink" title="concat / concatArray"></a>concat / concatArray</h3><p><code>concat</code> 操作符可以连接<strong>最多4个的被观察者</strong>，他们的顺序是<strong>串行执行</strong>的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.concat(</span><br><span class="line">        Flowable.just(1,2,3),</span><br><span class="line">        Flowable.just(4,5,6))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码输出结果为 “1,2,3,4,5,6”，如果<strong>需要多于 4 个被观察合并在一起</strong>，可以使用 <code>concatArray</code> 操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flowable.concatArray(Flowable.just(1), Flowable.just(2))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<h3 id="merge-mergeArray"><a href="#merge-mergeArray" class="headerlink" title="merge / mergeArray"></a>merge / mergeArray</h3><p>上面说到的 <code>concat</code> 操作符，对于<strong>每一个被观察者都是按照顺序串行执行的</strong>，接下来介绍的 <code>merge</code> 操作符也是合并多个被观察者，但他们合并后是<strong>按照时间线并行执行</strong>，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.merge(</span><br><span class="line">        Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS),</span><br><span class="line">        Flowable.intervalRange(3, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子中，两个被观察将并行执行，输出结果 “0,3-&gt;1,4-&gt;2,5”，可以直观的地观察到和 <code>concat</code> 操作符的区别。</p>
+<p>和 <code>concat</code> 操作符一样，<code>merge</code> 也是<strong>最多只能合并4个被观察者</strong>，可以使用 <code>mergeArray</code> 来合并多个被观察者，这里就不举例子了。</p>
+<h3 id="concatDelayError-mergeDelayError"><a href="#concatDelayError-mergeDelayError" class="headerlink" title="concatDelayError / mergeDelayError"></a>concatDelayError / mergeDelayError</h3><p>使用 <code>concat</code> 和 <code>merge</code> 操作符时，<strong>如果遇到其中一个被观察者发出 <code>onError</code> 事件则会马上终止其他被观察者的事件</strong>，如果希望 <code>onError</code> 事件<strong>推迟到其它被观察者都结束后才触发</strong>，可以使用对应的 <code>concatDelayError</code> 或者 <code>mergeDelayError</code> 操作符，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Flowable.mergeDelayError(</span><br><span class="line">        Flowable.create(s -&gt; s.onError(new NullPointerException()), BackpressureStrategy.ERROR),</span><br><span class="line">        Flowable.intervalRange(3, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p><code>concatArray</code> 和 <code>mergeArray</code> 也可以使用对应的操作符：<code>concatArrayDelayError</code> 和 <code>mergeArrayDelayError</code>，这里就不一一列举例子了。</p>
+<h3 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h3><p><strong>多个被观察者压缩成单个的操作可以使用 <code>zip</code> 操作符，如果多个被观察者数量不同，则以少的为基准</strong>，可以使用 <code>Funtions</code> 来自定义 <code>zip</code> 操作（zipper）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.zip(</span><br><span class="line">        Flowable.just(1, 2, 3),</span><br><span class="line">        Flowable.just(4, 5),</span><br><span class="line">        (int1, int2) -&gt; int1 + int2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中输出的结果为 5、7。</p>
+<p>对于 <code>delayError</code> 的操作是通过参数传递进去的，在 <code>zipper</code> 参数之后。<strong><code>zip</code> 操作符最多接受 9 个被观察者</strong>，这里的 <code>zipper</code> 使用到的 <code>Functions</code> 按照被观察个数分别对应 <code>Function</code>、<code>BiFunction</code> 和 <code>Function3 - Function9</code>，其中的 <code>apply</code> 方法用于对应的操作。</p>
+<h3 id="combineLatest"><a href="#combineLatest" class="headerlink" title="combineLatest"></a>combineLatest</h3><p><code>combineLatest</code> 类似 <code>zip</code> 操作符，但它合并时机和 <code>zip</code> 不一样，<code>zip</code> 是<strong>一对一合并压缩</strong>，<code>combineLatest</code> 则是在<strong>同一个时间线上，合并最后的元素</strong>，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.combineLatest(</span><br><span class="line">        Flowable.just(1L, 2L, 3L),</span><br><span class="line">        Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS),</span><br><span class="line">        (long1, long2) -&gt; long1 + long2)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述例子只会合并 3+0 、3+1 、3+2 ，即输出3、4、5这几个元素。对于第一个观察者中1、2元素被忽略了。</p>
+<h3 id="combineLatestDelayError"><a href="#combineLatestDelayError" class="headerlink" title="combineLatestDelayError"></a>combineLatestDelayError</h3><p><code>combineLatest</code> 要处理 <code>delayError</code> 问题，需要使用 <code>combineLatestDelayError</code> 操作符，这个操作符<strong>把 <code>combiner的Funtions</code> 用 <code>Object[]</code> 数组的 <code>Funtion</code> 来代替，而且是作为第一个参数</strong>，上述的 <code>combineLatest</code> 例子使用 <code>combineLatestDelayError</code> 可以改写成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flowable.combineLatestDelayError(</span><br><span class="line">         objects -&gt; (Long) objects[0] + (Long) objects[1],</span><br><span class="line">         Flowable.just(1L, 2L, 3L),</span><br><span class="line">         Flowable.intervalRange(0, 3, 1, 1, TimeUnit.SECONDS))</span><br><span class="line">         .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<h3 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h3><p>下面我们来介绍<strong>聚合操作符，要把一个被观察者的所有元素都聚合成单一的元素</strong>，可以使用 <code>reduce</code> 操作符，比如把所有元素都加起来，代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .reduce((last, item) -&gt; &#123;</span><br><span class="line">            Log.i(&quot;tag&quot;, last + &quot;,&quot; + item);</span><br><span class="line">            return last + item;</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>可以看到一开始，先执行 1+2，然后用 1+2 的结果和 3 相加，最后输出 6，<strong>相当于把三个元素聚合在一起</strong>。</p>
+<h3 id="count"><a href="#count" class="headerlink" title="count"></a>count</h3><p>如果要<strong>统计一个被观察者发送多少个元素</strong>可以使用 <code>count</code> 方法,其代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .count()</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p><code>count</code> 操作符会把<strong>观察者转换成 <code>Single&lt;Long&gt;</code> 类型的被观察者</strong>，上述代码会输出3（即原被观察者发送的元素数量）。</p>
+<h3 id="collect"><a href="#collect" class="headerlink" title="collect"></a>collect</h3><p><code>collect</code> 和 <code>reduce</code> 操作相似，不过<strong>它是需要自己定义收集的容器和收集逻辑</strong>，下面举个例子，利用 ArrayList 收集发射的元素：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .collect(</span><br><span class="line">                new Callable&lt;ArrayList&lt;Integer&gt;&gt;() &#123;//创建收集容器</span><br><span class="line">                    @Override</span><br><span class="line">                    public ArrayList&lt;Integer&gt; call() throws Exception &#123;</span><br><span class="line">                        return new ArrayList&lt;&gt;();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, new BiConsumer&lt;ArrayList&lt;Integer&gt;, Integer&gt;() &#123;//收集操作</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(ArrayList&lt;Integer&gt; list, Integer integer)</span><br><span class="line">                            throws Exception &#123;//前者容器，后者数据</span><br><span class="line">                        list.add(integer);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br><span class="line"></span><br><span class="line">//lambda写法</span><br><span class="line">Flowable.just(1, 2, 3)</span><br><span class="line">        .collect(ArrayList::new, ArrayList::add)</span><br><span class="line">        .subscribe(ele -&gt; Log.i(&quot;tag&quot;, String.valueOf(ele)));</span><br></pre></td></tr></table></figure></p>
+<p>上述操作最终会输出 [1, 2, 3] 这个 ArrayList 元素，相当于收集了所有元素的结果。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1971,7 +1856,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1982,7 +1867,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
